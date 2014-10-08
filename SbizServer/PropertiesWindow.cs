@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace SbizServer
 {
-    public partial class Form1 : Form
+    public partial class PropertiesWindow : Form
     {
-        public Form1()
+        public PropertiesWindow()
         {
             InitializeComponent();
         }
