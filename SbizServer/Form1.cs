@@ -17,6 +17,7 @@ namespace SbizServer
         public Form1()
         {
             InitializeComponent();
+            SbizServerController.Init();
         }
 
         private void Form1_Resize(object sender, EventArgs e)

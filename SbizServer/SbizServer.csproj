@@ -44,8 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SbizServerController.cs" />
     <Compile Include="SbizServerModel.cs" />
-    <Compile Include="SbizSocket.cs" />
+    <Compile Include="SbizServerSocket.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
