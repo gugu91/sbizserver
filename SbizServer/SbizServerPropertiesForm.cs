@@ -38,9 +38,7 @@ namespace SbizServer
 
         public void UpdateViewOnModelChanged(object sender, ModelChanged_EventArgs args)
         {
-            object[] p = GetInvokerParameters(sender, args);
-
-            BeginInvoke(new UpdateViewDelegate(UpdateView), p);
+            BeginInvoke(new UpdateViewDelegate(UpdateView), new object[] {sender, args});
         }
 
         public void UpdateView(object sender, ModelChanged_EventArgs args)
@@ -58,17 +56,6 @@ namespace SbizServer
                     SbizServerConnectionStatusLabel.ForeColor = Color.Red;
                 }
             }
-        }
-
-        private object[] GetInvokerParameters(object sender, ModelChanged_EventArgs args)
-        {
-            // We have to create and object array as this is the only way our UpdateLabelText method can receive the parameters
-            object[] delegateParameter = new object[2];
-
-            delegateParameter[0] = sender;
-            delegateParameter[1] = args;
-
-            return delegateParameter;
         }
 
         private void SbizServerConnectionStatusLabel_Paint(object sender, PaintEventArgs e)
