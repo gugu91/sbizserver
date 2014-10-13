@@ -13,7 +13,7 @@ namespace SbizServer
     {
         private Socket s_listen;
         private Socket s_conn;
-        public static const int  port = 15001;
+        public const int  port = 15001;
         private static bool _connected;
 
         public bool Connected{
@@ -49,8 +49,6 @@ namespace SbizServer
                 s_conn = s_listen.Accept();
 
                 _connected = true;
-                ModelChanged_EventArgs args = new ModelChanged_EventArgs(UP);
-                SbizServerModel.OnModelChanged(this, args);
             }
         }
 
@@ -67,8 +65,8 @@ namespace SbizServer
                 s_conn = null;
 
                 _connected = false;
-                ConnectionStatusChanged_EventArgs args = new ConnectionStatusChanged_EventArgs(DOWN);
-                SbizServerController.OnConnectionStatusChanged(this, args);
+                ModelChanged_EventArgs args = new ModelChanged_EventArgs();
+                SbizServerController.OnModelChanged(this, args);
             }
         }
     }

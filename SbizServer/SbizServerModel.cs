@@ -7,28 +7,11 @@ using System.Threading;
 
 namespace SbizServer
 {
-    public class ModelChanged_EventArgs : EventArgs
-    {
-        private int _status;
-        public ModelChanged_EventArgs()
-        {
-        }
-    }
     static class SbizServerModel
     {
         public static SbizServerSocket sbiz_socket;
         public static Thread background_thread;
         private static Int32 _stop;
-
-        public delegate void ModelChanged_EventHandler(object sender, ModelChanged_EventArgs args);
-        public static event ModelChanged_EventHandler ModelChanged;
-        public static virtual void OnModelChanged(object sender, ModelChanged_EventArgs args)
-        {
-            if (ModelChanged != null)
-            {
-                ModelChanged(sender, args); //raise the event
-            }
-        }
 
         public static void Init(){
             sbiz_socket = new SbizServerSocket();
@@ -38,16 +21,14 @@ namespace SbizServer
 
         public static void Start()
         {
-            if (background_thread == null)
-            {
-                background_thread = new Thread(() => Task());
-                background_thread.Start();
-            }
+            Task();
         }
 
         private static void Task()
         {
             sbiz_socket.AcceptConnection();
+            ModelChanged_EventArgs args = new ModelChanged_EventArgs();
+            SbizServerController.OnModelChanged(sbiz_socket, args);
 
             while (_stop == 0)
             {
@@ -58,7 +39,7 @@ namespace SbizServer
             Interlocked.Exchange(ref _stop, 0);
         }
 
-        public void Stop()
+        public static void Stop()
         {
             Interlocked.Exchange(ref _stop, 1);
             background_thread.Join();
