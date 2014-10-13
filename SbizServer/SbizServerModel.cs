@@ -21,7 +21,12 @@ namespace SbizServer
 
         public static void Start()
         {
-            Task();
+            if (background_thread == null)
+            {
+                background_thread = new Thread(() => Task());
+                background_thread.Start();
+            }
+            
         }
 
         private static void Task()

@@ -50,6 +50,7 @@
             this.SbizServerConnectionStatusLabel.Size = new System.Drawing.Size(77, 13);
             this.SbizServerConnectionStatusLabel.TabIndex = 0;
             this.SbizServerConnectionStatusLabel.Text = "Non Connesso";
+            this.SbizServerConnectionStatusLabel.Paint += new System.Windows.Forms.PaintEventHandler(this.SbizServerConnectionStatusLabel_Paint);
             // 
             // SbizServerPropertiesForm
             // 

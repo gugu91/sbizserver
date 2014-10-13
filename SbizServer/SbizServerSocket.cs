@@ -47,7 +47,6 @@ namespace SbizServer
             if (!_connected)
             {
                 s_conn = s_listen.Accept();
-
                 _connected = true;
             }
         }

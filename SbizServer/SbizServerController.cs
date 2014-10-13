@@ -28,7 +28,6 @@ namespace SbizServer
         {
             if (ModelChanged != null)
             {
-                //Call thread safely all methods registered on the delegate
                 ModelChanged(sender, args);
             }
         }
@@ -41,7 +40,7 @@ namespace SbizServer
 
         public static void Start()
         {
-            //SbizServerModel.Start();
+            SbizServerModel.Start();
         }
 
         public static void RegisterView(SbizForm view) //Call this from a view to subscribe the event

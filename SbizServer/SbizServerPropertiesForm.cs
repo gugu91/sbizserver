@@ -13,13 +13,13 @@ namespace SbizServer
 {
     public partial class SbizServerPropertiesForm : Form, SbizForm
     {
+        private delegate void UpdateViewDelegate(object sender, ModelChanged_EventArgs args);
 
         public SbizServerPropertiesForm()
         {
             InitializeComponent();
             SbizServerController.Init();
             SbizServerController.RegisterView(this);
-            SbizServerController.Start();
         }
 
         private void SbizServerForm_Resize(object sender, EventArgs e)
@@ -34,7 +34,16 @@ namespace SbizServer
             WindowState = FormWindowState.Normal;
         }
 
+
+
         public void UpdateViewOnModelChanged(object sender, ModelChanged_EventArgs args)
+        {
+            object[] p = GetInvokerParameters(sender, args);
+
+            BeginInvoke(new UpdateViewDelegate(UpdateView), p);
+        }
+
+        public void UpdateView(object sender, ModelChanged_EventArgs args)
         {
             if (sender is SbizServerSocket)
             {
@@ -49,6 +58,22 @@ namespace SbizServer
                     SbizServerConnectionStatusLabel.ForeColor = Color.Red;
                 }
             }
+        }
+
+        private object[] GetInvokerParameters(object sender, ModelChanged_EventArgs args)
+        {
+            // We have to create and object array as this is the only way our UpdateLabelText method can receive the parameters
+            object[] delegateParameter = new object[2];
+
+            delegateParameter[0] = sender;
+            delegateParameter[1] = args;
+
+            return delegateParameter;
+        }
+
+        private void SbizServerConnectionStatusLabel_Paint(object sender, PaintEventArgs e)
+        {
+            SbizServerController.Start();
         }
     }
 }
