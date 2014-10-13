@@ -13,7 +13,7 @@ namespace SbizServer
     {
         private Socket s_listen;
         private Socket s_conn;
-        public const int  port = 15001;
+        public int  port = 15001;
         private static bool _connected;
 
         public bool Connected{
@@ -23,8 +23,9 @@ namespace SbizServer
             }
         }
 
-        public SbizServerSocket()
+        public SbizServerSocket(int port_p)
         {
+            port = port_p;
             IPEndPoint ipe = new IPEndPoint(IPAddress.Any, port);
             s_listen = new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 

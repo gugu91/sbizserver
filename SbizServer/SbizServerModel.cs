@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.IO;
 
 namespace SbizServer
 {
@@ -14,7 +15,7 @@ namespace SbizServer
         private static Int32 _stop;
 
         public static void Init(){
-            sbiz_socket = new SbizServerSocket();
+            sbiz_socket = new SbizServerSocket(SbizServerConf.SbizSocketPort);
             background_thread = null;
             Interlocked.Exchange(ref _stop, 0);
         }
