@@ -53,6 +53,7 @@ namespace SbizServer
                     SbizServerStopConnectionButton.Enabled = true;
                     SbizServerSetPortButton.Enabled = false;
                     SbizServerSetPortNumericUpDown.Enabled = false;
+                    SbizServerNotifyIcon.ShowBalloonTip(15000, "Client connected", " ", ToolTipIcon.Info);
                 }
                 else
                 {
