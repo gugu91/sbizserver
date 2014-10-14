@@ -67,10 +67,13 @@ namespace SbizServer
 
         private void SbizServerSetPortButton_Click(object sender, EventArgs e)
         {
-            SbizServerConf.SbizSocketPort = Convert.ToInt32(SbizServerSetPortNumericUpDown.Value);
-            SbizServerController.Stop();
-            SbizServerController.Init();
-            SbizServerController.Start();
+            if (SbizServerConf.SbizSocketPort != Convert.ToInt32(SbizServerSetPortNumericUpDown.Value))
+            {
+                SbizServerConf.SbizSocketPort = Convert.ToInt32(SbizServerSetPortNumericUpDown.Value);
+                SbizServerController.Stop();
+                SbizServerController.Init();
+                SbizServerController.Start();
+            }
         }
 
         private void SbizServerSetPortNumericUpDown_Paint(object sender, PaintEventArgs e)
