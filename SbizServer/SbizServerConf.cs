@@ -46,6 +46,7 @@ namespace SbizServer
 
                 try{
                     string port_ascii = sr.ReadLine();
+                    sr.Close();
                     retValue = Int32.Parse(port_ascii);
                 } catch (Exception e){
                     StreamWriter sw = new StreamWriter(SbizSocketPath);

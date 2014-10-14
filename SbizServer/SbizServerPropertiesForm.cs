@@ -20,6 +20,7 @@ namespace SbizServer
             InitializeComponent();
             SbizServerController.Init();
             SbizServerController.RegisterView(this);
+            SbizServerController.Start();
         }
 
         private void SbizServerForm_Resize(object sender, EventArgs e)
@@ -49,18 +50,37 @@ namespace SbizServer
                 {
                     SbizServerConnectionStatusLabel.Text = "Connesso";
                     SbizServerConnectionStatusLabel.ForeColor = Color.Green;
+                    SbizServerStopConnectionButton.Enabled = true;
+                    SbizServerSetPortButton.Enabled = false;
+                    SbizServerSetPortNumericUpDown.Enabled = false;
                 }
                 else
                 {
                     SbizServerConnectionStatusLabel.Text = "Non Connesso";
                     SbizServerConnectionStatusLabel.ForeColor = Color.Red;
+                    SbizServerStopConnectionButton.Enabled = false;
+                    SbizServerSetPortButton.Enabled = true;
+                    SbizServerSetPortNumericUpDown.Enabled = true;
                 }
             }
         }
 
-        private void SbizServerConnectionStatusLabel_Paint(object sender, PaintEventArgs e)
+        private void SbizServerSetPortButton_Click(object sender, EventArgs e)
         {
+            SbizServerConf.SbizSocketPort = Convert.ToInt32(SbizServerSetPortNumericUpDown.Value);
+            SbizServerController.Stop();
+            SbizServerController.Init();
             SbizServerController.Start();
+        }
+
+        private void SbizServerSetPortNumericUpDown_Paint(object sender, PaintEventArgs e)
+        {
+            SbizServerSetPortNumericUpDown.Value = SbizServerConf.SbizSocketPort;
+        }
+
+        private void SbizServerStopConnectionButton_Click(object sender, EventArgs e)
+        {
+            SbizServerController.Stop();
         }
     }
 }

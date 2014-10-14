@@ -43,6 +43,11 @@ namespace SbizServer
             SbizServerModel.Start();
         }
 
+        public static void Stop()
+        {
+            SbizServerModel.Stop();
+        }
+
         public static void RegisterView(SbizForm view) //Call this from a view to subscribe the event
         {
             ModelChanged += new ModelChanged_Delegate(view.UpdateViewOnModelChanged);

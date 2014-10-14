@@ -32,11 +32,12 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SbizServerPropertiesForm));
             this.SbizServerNotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.SbizServerConnectionStatusLabel = new System.Windows.Forms.Label();
-            this.SetPortButton = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.StopConnectionBUtton = new System.Windows.Forms.Button();
+            this.SbizServerSetPortButton = new System.Windows.Forms.Button();
+            this.SbizServerStopConnectionButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.SbizServerSetPortNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.SbizServerSetPortNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // SbizServerNotifyIcon
@@ -55,35 +56,28 @@
             this.SbizServerConnectionStatusLabel.Size = new System.Drawing.Size(79, 13);
             this.SbizServerConnectionStatusLabel.TabIndex = 0;
             this.SbizServerConnectionStatusLabel.Text = "Not Connected";
-            this.SbizServerConnectionStatusLabel.Paint += new System.Windows.Forms.PaintEventHandler(this.SbizServerConnectionStatusLabel_Paint);
             // 
-            // SetPortButton
+            // SbizServerSetPortButton
             // 
-            this.SetPortButton.AutoSize = true;
-            this.SetPortButton.Location = new System.Drawing.Point(167, 54);
-            this.SetPortButton.Name = "SetPortButton";
-            this.SetPortButton.Size = new System.Drawing.Size(100, 26);
-            this.SetPortButton.TabIndex = 1;
-            this.SetPortButton.Text = "Set Port";
-            this.SetPortButton.UseVisualStyleBackColor = true;
+            this.SbizServerSetPortButton.AutoSize = true;
+            this.SbizServerSetPortButton.Location = new System.Drawing.Point(167, 54);
+            this.SbizServerSetPortButton.Name = "SbizServerSetPortButton";
+            this.SbizServerSetPortButton.Size = new System.Drawing.Size(100, 26);
+            this.SbizServerSetPortButton.TabIndex = 1;
+            this.SbizServerSetPortButton.Text = "Set Port";
+            this.SbizServerSetPortButton.UseVisualStyleBackColor = true;
+            this.SbizServerSetPortButton.Click += new System.EventHandler(this.SbizServerSetPortButton_Click);
             // 
-            // textBox1
+            // SbizServerStopConnectionButton
             // 
-            this.textBox1.Location = new System.Drawing.Point(167, 28);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 2;
-            this.textBox1.Text = "15001";
-            // 
-            // StopConnectionBUtton
-            // 
-            this.StopConnectionBUtton.Enabled = false;
-            this.StopConnectionBUtton.Location = new System.Drawing.Point(167, 130);
-            this.StopConnectionBUtton.Name = "StopConnectionBUtton";
-            this.StopConnectionBUtton.Size = new System.Drawing.Size(100, 28);
-            this.StopConnectionBUtton.TabIndex = 3;
-            this.StopConnectionBUtton.Text = "Stop Connection";
-            this.StopConnectionBUtton.UseVisualStyleBackColor = true;
+            this.SbizServerStopConnectionButton.Enabled = false;
+            this.SbizServerStopConnectionButton.Location = new System.Drawing.Point(167, 130);
+            this.SbizServerStopConnectionButton.Name = "SbizServerStopConnectionButton";
+            this.SbizServerStopConnectionButton.Size = new System.Drawing.Size(100, 28);
+            this.SbizServerStopConnectionButton.TabIndex = 3;
+            this.SbizServerStopConnectionButton.Text = "Stop Connection";
+            this.SbizServerStopConnectionButton.UseVisualStyleBackColor = true;
+            this.SbizServerStopConnectionButton.Click += new System.EventHandler(this.SbizServerStopConnectionButton_Click);
             // 
             // label1
             // 
@@ -103,21 +97,46 @@
             this.label2.TabIndex = 5;
             this.label2.Text = "Connection Status: ";
             // 
+            // SbizServerSetPortNumericUpDown
+            // 
+            this.SbizServerSetPortNumericUpDown.Location = new System.Drawing.Point(152, 26);
+            this.SbizServerSetPortNumericUpDown.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.SbizServerSetPortNumericUpDown.Minimum = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            0});
+            this.SbizServerSetPortNumericUpDown.Name = "SbizServerSetPortNumericUpDown";
+            this.SbizServerSetPortNumericUpDown.Size = new System.Drawing.Size(120, 20);
+            this.SbizServerSetPortNumericUpDown.TabIndex = 7;
+            this.SbizServerSetPortNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.SbizServerSetPortNumericUpDown.Value = new decimal(new int[] {
+            49952,
+            0,
+            0,
+            0});
+            this.SbizServerSetPortNumericUpDown.Paint += new System.Windows.Forms.PaintEventHandler(this.SbizServerSetPortNumericUpDown_Paint);
+            // 
             // SbizServerPropertiesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.SbizServerSetPortNumericUpDown);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.StopConnectionBUtton);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.SetPortButton);
+            this.Controls.Add(this.SbizServerStopConnectionButton);
+            this.Controls.Add(this.SbizServerSetPortButton);
             this.Controls.Add(this.SbizServerConnectionStatusLabel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SbizServerPropertiesForm";
             this.Text = "Form1";
             this.Resize += new System.EventHandler(this.SbizServerForm_Resize);
+            ((System.ComponentModel.ISupportInitialize)(this.SbizServerSetPortNumericUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -127,11 +146,11 @@
 
         private System.Windows.Forms.NotifyIcon SbizServerNotifyIcon;
         private System.Windows.Forms.Label SbizServerConnectionStatusLabel;
-        private System.Windows.Forms.Button SetPortButton;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button StopConnectionBUtton;
+        private System.Windows.Forms.Button SbizServerSetPortButton;
+        private System.Windows.Forms.Button SbizServerStopConnectionButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.NumericUpDown SbizServerSetPortNumericUpDown;
     }
 }
 

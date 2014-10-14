@@ -15,7 +15,7 @@ namespace SbizServer
         private static Int32 _stop;
 
         public static void Init(){
-            sbiz_socket = new SbizServerSocket(SbizServerConf.SbizSocketPort);
+            sbiz_socket = new SbizServerSocket();
             background_thread = null;
             Interlocked.Exchange(ref _stop, 0);
         }
@@ -24,6 +24,7 @@ namespace SbizServer
         {
             if (background_thread == null)
             {
+                sbiz_socket.SbizServerListenOnPort(SbizServerConf.SbizSocketPort);
                 background_thread = new Thread(() => Task());
                 background_thread.Start();
             }
@@ -32,7 +33,11 @@ namespace SbizServer
 
         private static void Task()
         {
-            sbiz_socket.AcceptConnection();
+            while (_stop == 0)
+            {
+                if (sbiz_socket.AcceptConnection() > 0) break;
+            }
+
             ModelChanged_EventArgs args = new ModelChanged_EventArgs();
             SbizServerController.OnModelChanged(sbiz_socket, args);
 
@@ -49,6 +54,8 @@ namespace SbizServer
         {
             Interlocked.Exchange(ref _stop, 1);
             background_thread.Join();
+            ModelChanged_EventArgs args = new ModelChanged_EventArgs();
+            SbizServerController.OnModelChanged(sbiz_socket, args);
         }
     }
 }

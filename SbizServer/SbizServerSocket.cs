@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -13,7 +14,7 @@ namespace SbizServer
     {
         private Socket s_listen;
         private Socket s_conn;
-        public int  port = 15001;
+        public int  port;
         private static bool _connected;
 
         public bool Connected{
@@ -23,7 +24,13 @@ namespace SbizServer
             }
         }
 
-        public SbizServerSocket(int port_p)
+        public SbizServerSocket()
+        {
+            port = 15001;
+            _connected = false;
+        }
+
+        public void SbizServerListenOnPort(int port_p)
         {
             port = port_p;
             IPEndPoint ipe = new IPEndPoint(IPAddress.Any, port);
@@ -43,13 +50,25 @@ namespace SbizServer
             _connected = false;
         }
 
-        public void AcceptConnection()
+        public int AcceptConnection()
         {
             if (!_connected)
             {
-                s_conn = s_listen.Accept();
-                _connected = true;
+                ArrayList listenList = new ArrayList();
+                listenList.Add(s_listen);
+                Socket.Select(listenList, null, null, 10 ^ 5);
+                for (int i = 0; i < listenList.Count; i++)
+                {
+                    s_conn = s_listen.Accept();
+                    _connected = true;
+
+                    return 1;
+                }
+
+                return -1;
             }
+
+            return 1;
         }
 
         public void ReceiveData()
@@ -65,8 +84,6 @@ namespace SbizServer
                 s_conn = null;
 
                 _connected = false;
-                ModelChanged_EventArgs args = new ModelChanged_EventArgs();
-                SbizServerController.OnModelChanged(this, args);
             }
         }
     }
