@@ -133,8 +133,9 @@
             this.Controls.Add(this.SbizServerSetPortButton);
             this.Controls.Add(this.SbizServerConnectionStatusLabel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "SbizServerPropertiesForm";
-            this.Text = "Form1";
+            this.Text = "SbizServer Properties";
             this.Resize += new System.EventHandler(this.SbizServerForm_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.SbizServerSetPortNumericUpDown)).EndInit();
             this.ResumeLayout(false);
