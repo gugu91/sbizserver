@@ -85,6 +85,17 @@ namespace SbizServer
 
         private void SbizServerStopConnectionButton_Click(object sender, EventArgs e)
         {
+            //SbizServerController.Stop();
+            this.SbizServerCleanup();
+        }
+
+        private void SbizServerFormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.SbizServerCleanup();
+        }
+
+        private void SbizServerCleanup()
+        {
             SbizServerController.Stop();
         }
     }

@@ -73,7 +73,7 @@ namespace SbizServer
 
         public void ReceiveData()
         {
-
+            
         }
 
         public void ShutdownConnection()

@@ -136,6 +136,7 @@
             this.MaximizeBox = false;
             this.Name = "SbizServerPropertiesForm";
             this.Text = "SbizServer Properties";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SbizServerFormClosing);
             this.Resize += new System.EventHandler(this.SbizServerForm_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.SbizServerSetPortNumericUpDown)).EndInit();
             this.ResumeLayout(false);
