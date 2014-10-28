@@ -37,6 +37,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.SbizServerSetPortNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.SbizServerSetPortNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
@@ -121,11 +122,19 @@
             0});
             this.SbizServerSetPortNumericUpDown.Paint += new System.Windows.Forms.PaintEventHandler(this.SbizServerSetPortNumericUpDown_Paint);
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(15, 196);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(252, 20);
+            this.textBox1.TabIndex = 8;
+            // 
             // SbizServerPropertiesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.SbizServerSetPortNumericUpDown);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -153,6 +162,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown SbizServerSetPortNumericUpDown;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

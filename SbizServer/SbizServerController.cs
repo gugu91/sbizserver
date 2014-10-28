@@ -58,5 +58,6 @@ namespace SbizServer
             ModelChanged -= new ModelChanged_Delegate(view.UpdateViewOnModelChanged);
         }
 
+
     }
 }

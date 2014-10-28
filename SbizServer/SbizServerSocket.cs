@@ -71,9 +71,21 @@ namespace SbizServer
             return 1;
         }
 
-        public void ReceiveData()
+        public int ReceiveData(ref byte[] dataBuff)
         {
+            int byteRead = 0;
+            ArrayList connList = new ArrayList();
             
+            connList.Add(s_conn);
+            Socket.Select(connList, null, null, 10 ^ 5);
+
+            for(int i=0; i< connList.Count; i++)
+            {
+                 byteRead = s_conn.Receive(dataBuff);
+            }
+            return byteRead;
+
+
         }
 
         public void ShutdownConnection()

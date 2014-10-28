@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.IO;
+using System.Collections.Concurrent;
 
 namespace SbizServer
 {
@@ -13,6 +14,7 @@ namespace SbizServer
         public static SbizServerSocket sbiz_socket;
         public static Thread background_thread;
         private static Int32 _stop;
+        
 
         public static void Init(){
             sbiz_socket = new SbizServerSocket();
@@ -41,9 +43,19 @@ namespace SbizServer
             ModelChanged_EventArgs args = new ModelChanged_EventArgs();
             SbizServerController.OnModelChanged(sbiz_socket, args);
 
+            byte[] dataBuff = new byte[256];
+
             while (_stop == 0)
             {
-                sbiz_socket.ReceiveData();
+                int n = sbiz_socket.ReceiveData(ref dataBuff);
+                if(n>0)
+                {
+                    //Thread.Sleep(5000);
+                    StreamWriter sw = new StreamWriter("tmp.txt",true);
+                    sw.Write(Encoding.UTF8.GetString(dataBuff,0,n));
+                    
+                    sw.Close();
+                }
             }
 
             sbiz_socket.ShutdownConnection();
