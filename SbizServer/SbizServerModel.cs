@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.IO;
 using System.Collections.Concurrent;
+using SbizLibrary;
 
 namespace SbizServer
 {
@@ -51,8 +52,9 @@ namespace SbizServer
                 if(n>0)
                 {
                     //Thread.Sleep(5000);
+                    SbizMessage m = new SbizMessage(dataBuff);
                     StreamWriter sw = new StreamWriter("tmp.txt",true);
-                    sw.Write(Encoding.UTF8.GetString(dataBuff,0,n));
+                    sw.Write(Encoding.UTF8.GetString(m.Data, 0, m.Data.Length));
                     
                     sw.Close();
                 }
