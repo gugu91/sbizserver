@@ -56,7 +56,11 @@ namespace SbizServer
                     string tmp = Encoding.UTF8.GetString(m.Data, 0, m.Data.Length);
                     sw.Write(tmp);
                     sw.Close();
-                    System.Windows.Forms.SendKeys.SendWait(tmp);     
+                    System.Windows.Forms.SendKeys.SendWait(tmp);
+                }
+                else//timeout expired
+                {
+                    _stop = 1;
                 }
             }
 

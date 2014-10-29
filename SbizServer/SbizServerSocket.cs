@@ -7,29 +7,37 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Sbiz.Library;
 
 namespace SbizServer
 {
     class SbizServerSocket
     {
+        #region Attributes
         private Socket s_listen;
         private Socket s_conn;
         public int  port;
-        private static bool _connected;
+        private bool _connected;
+        #endregion
 
+        #region Properties
         public bool Connected{
             get
             {
                 return _connected;
             }
         }
+        #endregion
 
+        #region Constructors
         public SbizServerSocket()
         {
             port = 15001;
             _connected = false;
         }
+        #endregion
 
+        #region InstanceMethods
         public void SbizServerListenOnPort(int port_p)
         {
             port = port_p;
@@ -73,19 +81,18 @@ namespace SbizServer
 
         public int ReceiveData(ref byte[] dataBuff)
         {
-            int byteRead = 0;
+            int byteRead = -1;
             ArrayList connList = new ArrayList();
             
             connList.Add(s_conn);
-            Socket.Select(connList, null, null, 10 ^ 5);
+            Socket.Select(connList, null, null, 5*SbizConf.);
 
             for(int i=0; i< connList.Count; i++)
             {
                  byteRead = s_conn.Receive(dataBuff);
             }
+
             return byteRead;
-
-
         }
 
         public void ShutdownConnection()
@@ -98,5 +105,6 @@ namespace SbizServer
                 _connected = false;
             }
         }
+        #endregion
     }
 }
