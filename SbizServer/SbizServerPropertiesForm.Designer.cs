@@ -37,7 +37,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.SbizServerSetPortNumericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.SbizMyIPLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.SbizServerSetPortNumericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
@@ -50,18 +50,18 @@
             // 
             // SbizServerConnectionStatusLabel
             // 
-            this.SbizServerConnectionStatusLabel.AutoSize = true;
             this.SbizServerConnectionStatusLabel.ForeColor = System.Drawing.Color.Red;
-            this.SbizServerConnectionStatusLabel.Location = new System.Drawing.Point(188, 105);
+            this.SbizServerConnectionStatusLabel.Location = new System.Drawing.Point(154, 104);
             this.SbizServerConnectionStatusLabel.Name = "SbizServerConnectionStatusLabel";
-            this.SbizServerConnectionStatusLabel.Size = new System.Drawing.Size(79, 13);
+            this.SbizServerConnectionStatusLabel.Size = new System.Drawing.Size(100, 13);
             this.SbizServerConnectionStatusLabel.TabIndex = 0;
             this.SbizServerConnectionStatusLabel.Text = "Not Connected";
+            this.SbizServerConnectionStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // SbizServerSetPortButton
             // 
             this.SbizServerSetPortButton.AutoSize = true;
-            this.SbizServerSetPortButton.Location = new System.Drawing.Point(167, 54);
+            this.SbizServerSetPortButton.Location = new System.Drawing.Point(154, 51);
             this.SbizServerSetPortButton.Name = "SbizServerSetPortButton";
             this.SbizServerSetPortButton.Size = new System.Drawing.Size(100, 26);
             this.SbizServerSetPortButton.TabIndex = 1;
@@ -72,7 +72,7 @@
             // SbizServerStopConnectionButton
             // 
             this.SbizServerStopConnectionButton.Enabled = false;
-            this.SbizServerStopConnectionButton.Location = new System.Drawing.Point(167, 130);
+            this.SbizServerStopConnectionButton.Location = new System.Drawing.Point(154, 129);
             this.SbizServerStopConnectionButton.Name = "SbizServerStopConnectionButton";
             this.SbizServerStopConnectionButton.Size = new System.Drawing.Size(100, 28);
             this.SbizServerStopConnectionButton.TabIndex = 3;
@@ -83,7 +83,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 28);
+            this.label1.Location = new System.Drawing.Point(12, 27);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(134, 13);
             this.label1.TabIndex = 4;
@@ -92,7 +92,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 105);
+            this.label2.Location = new System.Drawing.Point(12, 104);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(100, 13);
             this.label2.TabIndex = 5;
@@ -100,7 +100,7 @@
             // 
             // SbizServerSetPortNumericUpDown
             // 
-            this.SbizServerSetPortNumericUpDown.Location = new System.Drawing.Point(152, 26);
+            this.SbizServerSetPortNumericUpDown.Location = new System.Drawing.Point(152, 25);
             this.SbizServerSetPortNumericUpDown.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -112,7 +112,7 @@
             0,
             0});
             this.SbizServerSetPortNumericUpDown.Name = "SbizServerSetPortNumericUpDown";
-            this.SbizServerSetPortNumericUpDown.Size = new System.Drawing.Size(120, 20);
+            this.SbizServerSetPortNumericUpDown.Size = new System.Drawing.Size(102, 20);
             this.SbizServerSetPortNumericUpDown.TabIndex = 7;
             this.SbizServerSetPortNumericUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.SbizServerSetPortNumericUpDown.Value = new decimal(new int[] {
@@ -122,19 +122,21 @@
             0});
             this.SbizServerSetPortNumericUpDown.Paint += new System.Windows.Forms.PaintEventHandler(this.SbizServerSetPortNumericUpDown_Paint);
             // 
-            // textBox1
+            // SbizMyIPLabel
             // 
-            this.textBox1.Location = new System.Drawing.Point(15, 196);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(252, 20);
-            this.textBox1.TabIndex = 8;
+            this.SbizMyIPLabel.AutoSize = true;
+            this.SbizMyIPLabel.Location = new System.Drawing.Point(12, 244);
+            this.SbizMyIPLabel.Name = "SbizMyIPLabel";
+            this.SbizMyIPLabel.Size = new System.Drawing.Size(105, 13);
+            this.SbizMyIPLabel.TabIndex = 8;
+            this.SbizMyIPLabel.Text = "Your IP Address is: ?";
             // 
             // SbizServerPropertiesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 262);
-            this.Controls.Add(this.textBox1);
+            this.ClientSize = new System.Drawing.Size(266, 266);
+            this.Controls.Add(this.SbizMyIPLabel);
             this.Controls.Add(this.SbizServerSetPortNumericUpDown);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -162,7 +164,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.NumericUpDown SbizServerSetPortNumericUpDown;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label SbizMyIPLabel;
     }
 }
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.IO;
 using System.Collections.Concurrent;
-using SbizLibrary;
+using Sbiz.Library;
 
 namespace SbizServer
 {
@@ -27,7 +27,7 @@ namespace SbizServer
         {
             if (background_thread == null)
             {
-                sbiz_socket.SbizServerListenOnPort(SbizServerConf.SbizSocketPort);
+                sbiz_socket.SbizServerListenOnPort(SbizConf.SbizSocketPort);
                 background_thread = new Thread(() => Task());
                 background_thread.Start();
             }
@@ -51,12 +51,12 @@ namespace SbizServer
                 int n = sbiz_socket.ReceiveData(ref dataBuff);
                 if(n>0)
                 {
-                    //Thread.Sleep(5000);
                     SbizMessage m = new SbizMessage(dataBuff);
                     StreamWriter sw = new StreamWriter("tmp.txt",true);
-                    sw.Write(Encoding.UTF8.GetString(m.Data, 0, m.Data.Length));
-                    
+                    string tmp = Encoding.UTF8.GetString(m.Data, 0, m.Data.Length);
+                    sw.Write(tmp);
                     sw.Close();
+                    System.Windows.Forms.SendKeys.SendWait(tmp);     
                 }
             }
 

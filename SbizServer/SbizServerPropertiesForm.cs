@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Sbiz.Library;
 
 namespace SbizServer
 {
@@ -21,6 +22,7 @@ namespace SbizServer
             SbizServerController.Init();
             SbizServerController.RegisterView(this);
             SbizServerController.Start();
+            SbizMyIPLabel.Text = "Your IP Addres is: " + SbizConf.MyIP;
         }
 
         private void SbizServerForm_Resize(object sender, EventArgs e)
@@ -69,9 +71,9 @@ namespace SbizServer
 
         private void SbizServerSetPortButton_Click(object sender, EventArgs e)
         {
-            if (SbizServerConf.SbizSocketPort != Convert.ToInt32(SbizServerSetPortNumericUpDown.Value))
+            if (SbizConf.SbizSocketPort != Convert.ToInt32(SbizServerSetPortNumericUpDown.Value))
             {
-                SbizServerConf.SbizSocketPort = Convert.ToInt32(SbizServerSetPortNumericUpDown.Value);
+                SbizConf.SbizSocketPort = Convert.ToInt32(SbizServerSetPortNumericUpDown.Value);
                 SbizServerController.Stop();
                 SbizServerController.Init();
                 SbizServerController.Start();
@@ -80,7 +82,7 @@ namespace SbizServer
 
         private void SbizServerSetPortNumericUpDown_Paint(object sender, PaintEventArgs e)
         {
-            SbizServerSetPortNumericUpDown.Value = SbizServerConf.SbizSocketPort;
+            SbizServerSetPortNumericUpDown.Value = SbizConf.SbizSocketPort;
         }
 
         private void SbizServerStopConnectionButton_Click(object sender, EventArgs e)

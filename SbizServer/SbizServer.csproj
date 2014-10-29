@@ -45,7 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SbizServerConf.cs" />
     <Compile Include="SbizServerController.cs" />
     <Compile Include="SbizServerModel.cs" />
     <Compile Include="SbizServerSocket.cs" />

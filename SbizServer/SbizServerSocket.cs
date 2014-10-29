@@ -57,7 +57,7 @@ namespace SbizServer
                 ArrayList listenList = new ArrayList();
                 listenList.Add(s_listen);
                 Socket.Select(listenList, null, null, 10 ^ 5);
-                for (int i = 0; i < listenList.Count; i++)
+                if (listenList.Count > 0)
                 {
                     s_conn = s_listen.Accept();
                     _connected = true;
