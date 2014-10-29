@@ -85,7 +85,7 @@ namespace SbizServer
             ArrayList connList = new ArrayList();
             
             connList.Add(s_conn);
-            Socket.Select(connList, null, null, 5*SbizConf.);
+            Socket.Select(connList, null, null, SbizConf.SbizSocketPacketLossAcceptance*SbizConf.SbizSocketTimeout_us);
 
             for(int i=0; i< connList.Count; i++)
             {

@@ -57,11 +57,13 @@ namespace SbizServer
                     sw.Write(tmp);
                     sw.Close();
                     System.Windows.Forms.SendKeys.SendWait(tmp);
-                }
+                }/*
                 else//timeout expired
                 {
                     _stop = 1;
-                }
+                    ModelChanged_EventArgs args = new ModelChanged_EventArgs();
+                    SbizServerController.OnModelChanged(sbiz_socket, args);
+                }*/
             }
 
             sbiz_socket.ShutdownConnection();
