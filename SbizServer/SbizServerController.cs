@@ -25,8 +25,32 @@ namespace SbizServer
         }
         #endregion
 
+        private static int _listening;
+        private const int YES = 1;
+        private const int NO = 0;
+
+        public static bool Listening{
+            get
+            {
+                if (_listening == YES) return true;
+                else return false;
+            }
+            set
+            {
+                if (value)
+                {
+                    System.Threading.Interlocked.Exchange(ref _listening, YES);
+                }
+                else
+                {
+                    System.Threading.Interlocked.Exchange(ref _listening, NO);
+                }
+            }
+        }
+
         public static void Init()
         {
+            Listening = true;
             SbizServerModel.Init();
         }
 
@@ -37,7 +61,8 @@ namespace SbizServer
 
         public static void Stop()
         {
-            SbizServerModel.Stop();
+            Listening = false;
+            SbizServerModel.ConnDownEvent.Set();
         }
 
         public static void RegisterView(SbizForm view) //Call this from a view to subscribe the event
