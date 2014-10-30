@@ -9,9 +9,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Sbiz.Library;
 
-namespace SbizServer
+namespace Sbiz.Library
 {
-    class SbizServerSocket
+    class SbizListenerSocket
     {
         #region Attributes
         private Socket s_listen;
@@ -30,7 +30,7 @@ namespace SbizServer
         #endregion
 
         #region Constructors
-        public SbizServerSocket()
+        public SbizListenerSocket()
         {
             port = 15001;
             _connected = false;
@@ -68,6 +68,7 @@ namespace SbizServer
                 if (listenList.Count > 0)
                 {
                     s_conn = s_listen.Accept();
+                    s_conn.ReceiveTimeout/*ms*/ = SbizConf.SbizSocketTimeout_ms;
                     _connected = true;
 
                     return 1;
@@ -79,19 +80,30 @@ namespace SbizServer
             return 1;
         }
 
+        ///<summary>
+        /// Receive data from client, returns number of byte read, 0 if timedout, -1 if connection was closed for any reason
+        /// </summary>
         public int ReceiveData(ref byte[] dataBuff)
         {
-            int byteRead = -1;
-            ArrayList connList = new ArrayList();
-            
-            connList.Add(s_conn);
-            Socket.Select(connList, null, null, SbizConf.SbizSocketPacketLossAcceptance*SbizConf.SbizSocketTimeout_us);
+            int byteRead;
 
-            for(int i=0; i< connList.Count; i++)
+            try
             {
-                 byteRead = s_conn.Receive(dataBuff);
+                byteRead = s_conn.Receive(dataBuff);//timeout was set in acceptconnection
             }
-
+            catch (SocketException se)
+            {
+                if (se.SocketErrorCode == SocketError.TimedOut)
+                {
+                    return 0;
+                }
+                else
+                {
+                    s_conn.Shutdown(SocketShutdown.Both);
+                    s_conn.Close();
+                    return -1;
+                }
+            }
             return byteRead;
         }
 
@@ -99,6 +111,7 @@ namespace SbizServer
         {
             if (_connected)
             {
+                s_conn.Shutdown(SocketShutdown.Both);
                 s_conn.Close();
                 s_conn = null;
 

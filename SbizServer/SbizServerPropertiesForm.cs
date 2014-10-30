@@ -14,15 +14,13 @@ namespace SbizServer
 {
     public partial class SbizServerPropertiesForm : Form, SbizForm
     {
-        private delegate void UpdateViewDelegate(object sender, ModelChanged_EventArgs args);
-
         public SbizServerPropertiesForm()
         {
             InitializeComponent();
+            SbizMyIPLabel.Text = "Your IP Addres is: " + SbizConf.MyIP;
             SbizServerController.Init();
             SbizServerController.RegisterView(this);
             SbizServerController.Start();
-            SbizMyIPLabel.Text = "Your IP Addres is: " + SbizConf.MyIP;
         }
 
         private void SbizServerForm_Resize(object sender, EventArgs e)
@@ -39,16 +37,16 @@ namespace SbizServer
 
 
 
-        public void UpdateViewOnModelChanged(object sender, ModelChanged_EventArgs args)
+        public void UpdateViewOnModelChanged(object sender, SbizModelChanged_EventArgs args)
         {
-            BeginInvoke(new UpdateViewDelegate(UpdateView), new object[] {sender, args});
+            BeginInvoke(new SbizUpdateView_Delegate(UpdateView), new object[] {sender, args});
         }
 
-        public void UpdateView(object sender, ModelChanged_EventArgs args)
+        public void UpdateView(object sender, SbizModelChanged_EventArgs args)
         {
-            if (sender is SbizServerSocket)
+            if (sender is SbizListenerSocket)
             {
-                if (((SbizServerSocket)sender).Connected)
+                if (args.Status == SbizModelChanged_EventArgs.CONNECTED)
                 {
                     SbizServerConnectionStatusLabel.Text = "Connesso";
                     SbizServerConnectionStatusLabel.ForeColor = Color.Green;
