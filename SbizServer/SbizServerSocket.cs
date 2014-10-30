@@ -15,18 +15,9 @@ namespace SbizServer
     {
         #region Attributes
         private Socket s_listen;
-        private Socket s_conn;
         public int  port;
-        private bool _connected;
-        #endregion
-
-        #region Properties
-        public bool Connected{
-            get
-            {
-                return _connected;
-            }
-        }
+        private bool _listening;
+        public ManualResetEvent allDone = new ManualResetEvent(false);
         #endregion
 
         #region Constructors
@@ -55,50 +46,21 @@ namespace SbizServer
 
             s_listen.Listen(100);
 
-            _connected = false;
+            _listening = true;
         }
 
-        public int AcceptConnection()
+        public void BeginAcceptConnection(AsyncCallback callback)
         {
-            if (!_connected)
-            {
-                ArrayList listenList = new ArrayList();
-                listenList.Add(s_listen);
-                Socket.Select(listenList, null, null, 10 ^ 5);
-                if (listenList.Count > 0)
-                {
-                    s_conn = s_listen.Accept();
-                    _connected = true;
-
-                    return 1;
-                }
-
-                return -1;
-            }
-
-            return 1;
+            s_listen.BeginAccept(AcceptCallback, this);
         }
 
-        public int ReceiveData(ref byte[] dataBuff)
-        {
-            int byteRead = -1;
-            ArrayList connList = new ArrayList();
-            
-            connList.Add(s_conn);
-            Socket.Select(connList, null, null, SbizConf.SbizSocketPacketLossAcceptance*SbizConf.SbizSocketTimeout_us);
-
-            for(int i=0; i< connList.Count; i++)
-            {
-                 byteRead = s_conn.Receive(dataBuff);
-            }
-
-            return byteRead;
-        }
+ 
 
         public void ShutdownConnection()
         {
             if (_connected)
             {
+                s_listen.Shutdown(SocketShutdown.Both);
                 s_conn.Close();
                 s_conn = null;
 
@@ -107,4 +69,6 @@ namespace SbizServer
         }
         #endregion
     }
+
+
 }
