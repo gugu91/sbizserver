@@ -47,7 +47,7 @@
   <ItemGroup>
     <Compile Include="SbizServerController.cs" />
     <Compile Include="SbizServerModel.cs" />
-    <Compile Include="SbizServerSocket.cs" />
+    <Compile Include="SbizListenerSocket.cs" />
     <Compile Include="SbizServerPropertiesForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -14,19 +14,27 @@ namespace SbizServer
 {
     static class SbizServerModel
     {
-        public static SbizServerSocket sbiz_socket;
         public static Thread background_thread;
         private static Int32 _stop;
         private static Socket s_listen;
-        private static bool _listening;
         private static Queue<byte[]> message_queue;
-        
+        private static ManualResetEvent _conn_down_event;
 
-        public static void Init(){
+        public static ManualResetEvent ConnDownEvent
+        {
+            get
+            {
+                return _conn_down_event;
+            }
+        }
+
+
+        public static void Init()
+        {
             background_thread = null;
             Interlocked.Exchange(ref _stop, 0);
-            messages = new Queue<byte[]>;
-            _listening = false;
+            message_queue = new Queue<byte[]>();
+            _conn_down_event = new ManualResetEvent(false);
         }
 
         public static void Start()
@@ -41,7 +49,6 @@ namespace SbizServer
                     s_listen.Bind(ipe);
                     s_listen.Listen(100);
 
-                    _listening = false;
                     background_thread = new Thread(() => Task());
                     background_thread.Start();
                 }
@@ -49,34 +56,35 @@ namespace SbizServer
                 {
 
                 }
-                
             }
-            
         }
 
         public static void Stop()
         {
-            Interlocked.Exchange(ref _stop, 1);
+            SbizServerModel.ConnDownEvent.Set();
+            s_listen.Close();
+            SbizModelChanged_EventArgs args = new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.NOT_LISTENING);
+            SbizServerController.OnModelChanged(s_listen, args);
             background_thread.Join();
-            ModelChanged_EventArgs args = new ModelChanged_EventArgs();
-            SbizServerController.OnModelChanged(sbiz_socket, args);
         }
 
         private static void Task()
         {
-            s_listen.BeginAccept(AcceptCallback, s_listen);
-
-            sbiz_socket.ShutdownConnection();
-            Interlocked.Exchange(ref _stop, 0);
+            while (SbizServerController.Listening)
+            {
+                s_listen.BeginAccept(AcceptCallback, s_listen);
+                ConnDownEvent.WaitOne();
+                ConnDownEvent.Reset();
+            }
         }
 
         public static void AcceptCallback(IAsyncResult ar)
         {
-            if (_listening)
+            if (SbizServerController.Listening)
             {
                 Socket listener = (Socket)ar.AsyncState;
                 Socket handler = listener.EndAccept(ar);
-                ModelChanged_EventArgs args = new ModelChanged_EventArgs();
+                SbizModelChanged_EventArgs args = new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.CONNECTED);
                 SbizServerController.OnModelChanged(handler, args);
 
                 // Create the state object.
@@ -89,7 +97,7 @@ namespace SbizServer
 
         public static void ReadCallback(IAsyncResult ar)
         {
-            if (_listening)
+            if (SbizServerController.Listening)
             {
                 // Retrieve the state object and the handler socket
                 // from the asynchronous state object.
@@ -102,10 +110,10 @@ namespace SbizServer
 
                 if (bytesRead > 0)
                 {
-                   /* lock (message_queue)
-                    {
-                        message_queue.Enqueue(state.buffer);
-                    }*/
+                    /* lock (message_queue)
+                     {
+                         message_queue.Enqueue(state.buffer);
+                     }*/
                     SbizMessage m = new SbizMessage(state.buffer);
 
 
@@ -123,7 +131,10 @@ namespace SbizServer
                 }
                 else//clientshutdown
                 {
+                    SbizModelChanged_EventArgs args = new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.NOT_CONNECTED);
+                    SbizServerController.OnModelChanged(handler, args);
 
+                    ConnDownEvent.Set();
                 }
             }
         }
