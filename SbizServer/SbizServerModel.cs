@@ -39,11 +39,11 @@ namespace SbizServer
             while (_stop == 0)
             {
                 while (_stop == 0) if (sbiz_socket.AcceptConnection() > 0) break;
-
+                
+                SbizServerController.OnModelChanged(sbiz_socket, new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.CONNECTED));
+                
                 while (_stop == 0)
                 {
-                    SbizServerController.OnModelChanged(sbiz_socket, new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.CONNECTED));
-
                     byte[] dataBuff = new byte[256];
 
                     int n = sbiz_socket.ReceiveData(ref dataBuff);
@@ -54,12 +54,12 @@ namespace SbizServer
                         string tmp = Encoding.UTF8.GetString(m.Data, 0, m.Data.Length);
                         sw.Write(tmp);
                         sw.Close();
-                        System.Windows.Forms.SendKeys.SendWait(tmp);
+                        //System.Windows.Forms.SendKeys.SendWait(tmp);
                     }
                     else if (n == 0)//timeout expired
                     {
                     }
-                    else if (n == -1)//conection closed
+                    else if (n == -1)//connection closed
                     {
                         SbizServerController.OnModelChanged(sbiz_socket, new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.ERROR));
                         break;

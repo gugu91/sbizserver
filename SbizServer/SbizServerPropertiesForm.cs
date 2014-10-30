@@ -17,7 +17,7 @@ namespace SbizServer
         public SbizServerPropertiesForm()
         {
             InitializeComponent();
-            SbizMyIPLabel.Text = "Your IP Addres is: " + SbizConf.MyIP;
+            SbizMyIPLabel.Text = "Your IP Address is: " + SbizConf.MyIP;
             SbizServerController.Init();
             SbizServerController.RegisterView(this);
             SbizServerController.Start();
@@ -53,7 +53,7 @@ namespace SbizServer
                     SbizServerStopConnectionButton.Enabled = true;
                     SbizServerSetPortButton.Enabled = false;
                     SbizServerSetPortNumericUpDown.Enabled = false;
-                    SbizServerNotifyIcon.ShowBalloonTip(15000, "Client connected", " ", ToolTipIcon.Info);
+                    SbizServerNotifyIcon.ShowBalloonTip(1000, "Client connected", " ", ToolTipIcon.Info);
                     Hide();
                 }
                 else
@@ -63,6 +63,7 @@ namespace SbizServer
                     SbizServerStopConnectionButton.Enabled = false;
                     SbizServerSetPortButton.Enabled = true;
                     SbizServerSetPortNumericUpDown.Enabled = true;
+                    Show();
                 }
             }
         }
