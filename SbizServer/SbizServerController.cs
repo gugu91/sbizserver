@@ -29,7 +29,8 @@ namespace SbizServer
         private const int YES = 1;
         private const int NO = 0;
 
-        public static bool Listening{
+        public static bool Listening
+        {
             get
             {
                 if (_listening == YES) return true;
