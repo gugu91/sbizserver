@@ -63,7 +63,7 @@ namespace SbizServer
         public static void Stop()
         {
             Listening = false;
-            SbizServerModel.ConnDownEvent.Set();
+            SbizServerModel.ConnEvent.Set();
         }
 
         public static void RegisterView(SbizForm view) //Call this from a view to subscribe the event

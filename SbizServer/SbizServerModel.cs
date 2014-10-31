@@ -18,13 +18,13 @@ namespace SbizServer
         private static Int32 _stop;
         private static Socket s_listen;
         private static Queue<byte[]> message_queue;
-        private static ManualResetEvent _conn_down_event;
+        private static AutoResetEvent _conn_event;
 
-        public static ManualResetEvent ConnDownEvent
+        public static AutoResetEvent ConnEvent
         {
             get
             {
-                return _conn_down_event;
+                return _conn_event;
             }
         }
 
@@ -34,7 +34,7 @@ namespace SbizServer
             background_thread = null;
             Interlocked.Exchange(ref _stop, 0);
             message_queue = new Queue<byte[]>();
-            _conn_down_event = new ManualResetEvent(false);
+            _conn_event = new AutoResetEvent(false);
         }
 
         public static void Start()
@@ -61,7 +61,7 @@ namespace SbizServer
 
         public static void Stop()
         {
-            SbizServerModel.ConnDownEvent.Set();
+            SbizServerModel.ConnEvent.Set();
             s_listen.Close();
             SbizModelChanged_EventArgs args = new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.NOT_LISTENING);
             SbizServerController.OnModelChanged(s_listen, args);
@@ -73,8 +73,18 @@ namespace SbizServer
             while (SbizServerController.Listening)
             {
                 s_listen.BeginAccept(AcceptCallback, s_listen);
-                ConnDownEvent.WaitOne();
-                ConnDownEvent.Reset();
+                ConnEvent.WaitOne();
+
+                byte[] buffer = null;
+                lock (message_queue)
+                {
+                    if (message_queue.Count != 0)
+                    {
+                        buffer = message_queue.Dequeue();
+                    }
+                }
+
+                if(buffer != null) MessageHandle(new SbizMessage(buffer));
             }
         }
 
@@ -110,21 +120,11 @@ namespace SbizServer
 
                 if (bytesRead > 0)
                 {
-                    /* lock (message_queue)
+                    lock (message_queue)
                      {
                          message_queue.Enqueue(state.buffer);
-                     }*/
-                    SbizMessage m = new SbizMessage(state.buffer);
-
-
-                    if (m.Code == SbizMessageConst.KEY_PRESS)
-                    {
-                        string tmp = Encoding.UTF8.GetString(m.Data, 0, m.Data.Length);
-                        System.Windows.Forms.SendKeys.SendWait(tmp);
-                    }
-
-                    //Add other events...
-
+                     }
+                    
                     //Get new data
                     handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                     new AsyncCallback(ReadCallback), state);
@@ -133,10 +133,21 @@ namespace SbizServer
                 {
                     SbizModelChanged_EventArgs args = new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.NOT_CONNECTED);
                     SbizServerController.OnModelChanged(handler, args);
-
-                    ConnDownEvent.Set();
                 }
+
+                ConnEvent.Set();
             }
+        }
+
+        public static void MessageHandle(SbizMessage m)
+        {
+            if (m.Code == SbizMessageConst.KEY_PRESS)
+            {
+                string tmp = Encoding.UTF8.GetString(m.Data, 0, m.Data.Length);
+                System.Windows.Forms.SendKeys.SendWait(tmp);
+            }
+
+            //Add other events...
         }
     }
 
