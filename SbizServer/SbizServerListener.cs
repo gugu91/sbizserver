@@ -95,6 +95,7 @@ namespace SbizServer
                 else//clientshutdown
                 {
                     SbizServerController.OnModelChanged(this, new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.NOT_CONNECTED));
+                    Start();
                 }
 
                 SbizServerModel.ModelSyncEvent.Set();
