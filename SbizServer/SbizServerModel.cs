@@ -9,6 +9,7 @@ using System.Collections.Concurrent;
 using Sbiz.Library;
 using System.Net;
 using System.Net.Sockets;
+using Sbiz.Library;
 
 namespace SbizServer
 {
@@ -16,55 +17,49 @@ namespace SbizServer
     {
         public static Thread background_thread;
         private static Int32 _stop;
-        private static Socket s_listen;
-        private static Queue<byte[]> message_queue;
-        private static AutoResetEvent _conn_event;
+        private static SbizQueue<byte[]> _tcp_buffer_queue;
+        private static AutoResetEvent _model_sync_event;
+        private static SbizServerListener _listener;
 
-        public static AutoResetEvent ConnEvent
+        public static AutoResetEvent ModelSyncEvent
         {
             get
             {
-                return _conn_event;
+                return _model_sync_event;
             }
         }
 
+        public static SbizQueue<byte[]> TCPBufferQueue
+        {
+            get
+            {
+                return _tcp_buffer_queue;
+            }
+        }
 
         public static void Init()
         {
+            _listener = new SbizServerListener();
             background_thread = null;
             Interlocked.Exchange(ref _stop, 0);
-            message_queue = new Queue<byte[]>();
-            _conn_event = new AutoResetEvent(false);
+            _tcp_buffer_queue = new SbizQueue<byte[]>();
+            _model_sync_event = new AutoResetEvent(false);
         }
 
         public static void Start()
         {
             if (background_thread == null)
             {
-                IPEndPoint ipe = new IPEndPoint(IPAddress.Any, SbizConf.SbizSocketPort);
-                s_listen = new Socket(ipe.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-
-                try
-                {
-                    s_listen.Bind(ipe);
-                    s_listen.Listen(100);
-
-                    background_thread = new Thread(() => Task());
-                    background_thread.Start();
-                }
-                catch //TODO handle bind exception
-                {
-
-                }
+                _listener.Listen(SbizConf.SbizSocketPort);//called here beacause SbizConf is not thread safe
+                background_thread = new Thread(() => Task());
+                background_thread.Start();
             }
         }
 
         public static void Stop()
         {
-            SbizServerModel.ConnEvent.Set();
-            s_listen.Close();
-            SbizModelChanged_EventArgs args = new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.NOT_LISTENING);
-            SbizServerController.OnModelChanged(s_listen, args);
+            SbizServerModel.ModelSyncEvent.Set();
+            _listener.Stop();
             background_thread.Join();
         }
 
@@ -72,72 +67,14 @@ namespace SbizServer
         {
             while (SbizServerController.Listening)
             {
-                s_listen.BeginAccept(AcceptCallback, s_listen);
-                ConnEvent.WaitOne();
+                _listener.Start();
+                ModelSyncEvent.WaitOne();
 
                 byte[] buffer = null;
-                lock (message_queue)
-                {
-                    if (message_queue.Count != 0)
-                    {
-                        buffer = message_queue.Dequeue();
-                    }
-                }
-
-                if(buffer != null) MessageHandle(new SbizMessage(buffer));
+                if (SbizServerModel.TCPBufferQueue.Dequeue(ref buffer)) MessageHandle(new SbizMessage(buffer));
             }
         }
 
-        public static void AcceptCallback(IAsyncResult ar)
-        {
-            if (SbizServerController.Listening)
-            {
-                Socket listener = (Socket)ar.AsyncState;
-                Socket handler = listener.EndAccept(ar);
-                SbizModelChanged_EventArgs args = new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.CONNECTED);
-                SbizServerController.OnModelChanged(handler, args);
-
-                // Create the state object.
-                StateObject state = new StateObject();
-                state.s_conn = handler;
-                handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                    new AsyncCallback(ReadCallback), state);
-            }
-        }
-
-        public static void ReadCallback(IAsyncResult ar)
-        {
-            if (SbizServerController.Listening)
-            {
-                // Retrieve the state object and the handler socket
-                // from the asynchronous state object.
-                StateObject state = (StateObject)ar.AsyncState;
-
-                Socket handler = state.s_conn;
-
-                // Read data from the client socket. 
-                int bytesRead = handler.EndReceive(ar);
-
-                if (bytesRead > 0)
-                {
-                    lock (message_queue)
-                     {
-                         message_queue.Enqueue(state.buffer);
-                     }
-                    
-                    //Get new data
-                    handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                    new AsyncCallback(ReadCallback), state);
-                }
-                else//clientshutdown
-                {
-                    SbizModelChanged_EventArgs args = new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.NOT_CONNECTED);
-                    SbizServerController.OnModelChanged(handler, args);
-                }
-
-                ConnEvent.Set();
-            }
-        }
 
         public static void MessageHandle(SbizMessage m)
         {
@@ -149,15 +86,6 @@ namespace SbizServer
 
             //Add other events...
         }
-    }
-
-    public class StateObject
-    {
-        public Socket s_conn;
-        // Size of receive buffer.
-        public const int BufferSize = 1024;
-        // Receive buffer.
-        public byte[] buffer = new byte[BufferSize];
     }
 
 }
