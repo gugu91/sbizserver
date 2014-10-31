@@ -44,7 +44,7 @@ namespace SbizServer
 
         public void UpdateView(object sender, SbizModelChanged_EventArgs args)
         {
-            if (sender is System.Net.Sockets.Socket)
+            if (sender is SbizServerListener)
             {
                 if (args.Status == SbizModelChanged_EventArgs.CONNECTED)
                 {
