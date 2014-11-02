@@ -16,7 +16,6 @@ namespace SbizServer
     static class SbizServerModel
     {
         public static Thread background_thread;
-        private static Int32 _stop;
         private static SbizQueue<byte[]> _tcp_buffer_queue;
         private static AutoResetEvent _model_sync_event;
         private static SbizServerListener _listener;
@@ -41,7 +40,6 @@ namespace SbizServer
         {
             _listener = new SbizServerListener();
             background_thread = null;
-            Interlocked.Exchange(ref _stop, 0);
             _tcp_buffer_queue = new SbizQueue<byte[]>();
             _model_sync_event = new AutoResetEvent(false);
         }
@@ -59,8 +57,8 @@ namespace SbizServer
         public static void Stop()
         {
             SbizServerModel.ModelSyncEvent.Set();
-            _listener.Stop();
             background_thread.Join();
+            background_thread = null;
         }
 
         private static void Task()
@@ -73,6 +71,8 @@ namespace SbizServer
                 byte[] buffer = null;
                 if (SbizServerModel.TCPBufferQueue.Dequeue(ref buffer)) MessageHandle(new SbizMessage(buffer));
             }
+
+            _listener.Stop();
         }
 
 

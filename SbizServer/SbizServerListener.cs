@@ -15,7 +15,14 @@ namespace SbizServer
     {
         #region Attributes
         private Socket s_listen;
+        private Socket s_conn;
         #endregion
+
+        public SbizServerListener()
+        {
+            s_listen = null;
+            s_conn = null;
+        }
 
         #region InstanceMethods
         /// <summary>
@@ -49,8 +56,16 @@ namespace SbizServer
         /// </summary>
         public void Stop()
         {
-            s_listen.Shutdown(SocketShutdown.Both);
-            s_listen.Close();
+            if (s_conn != null)
+            {
+                s_conn.Shutdown(SocketShutdown.Both);
+                s_conn.Close();
+                s_conn = null;
+            }
+            if (s_listen != null)
+            {
+                s_listen.Close();
+            }
             SbizServerController.OnModelChanged(this, new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.NOT_LISTENING));
         }
 
@@ -60,7 +75,18 @@ namespace SbizServer
             if (SbizServerController.Listening)
             {
                 Socket listener = (Socket)ar.AsyncState;
-                Socket handler = listener.EndAccept(ar);
+                Socket handler = null;
+                try
+                {
+                    handler = listener.EndAccept(ar);
+                }
+                catch (ObjectDisposedException ode) //user changed port
+                {
+                    SbizLogger.Logger = "User changed port";
+                    return;
+                }
+                
+                s_conn = handler;
 
                 SbizServerController.OnModelChanged(this, new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.CONNECTED));
 
@@ -87,18 +113,35 @@ namespace SbizServer
 
                 if (bytesRead > 0)
                 {
-                    SbizServerModel.TCPBufferQueue.Enqueue(state.buffer);
+                    /* NB there was previously a protocol error as size of the data buffer was not sent, causing
+                     * some data to not be processed by server.
+                     */
+                    int seek=0;
+                    while(seek < bytesRead){
+                        //First four bytes are the size of the subsequent databuffer
+                        byte[] datasize_byte = new byte[sizeof(Int32)];
+                        Array.Copy(state.buffer, seek, datasize_byte, 0, sizeof(Int32));
+                        seek += sizeof(Int32);
+                        Int32 datasize = BitConverter.ToInt32(datasize_byte, 0);
+
+                        //Databuffer handled here
+                        byte[] data = new byte[datasize];
+                        Array.Copy(state.buffer, seek, data, 0, datasize);
+                        seek += datasize;
+                        SbizServerModel.TCPBufferQueue.Enqueue(data);
+                        SbizServerModel.ModelSyncEvent.Set();
+                    }
                     //Get new data
-                    handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                    new AsyncCallback(ReadCallback), state);
+                    StateObject state_out = new StateObject();
+                    state_out.s_conn = handler;
+                    handler.BeginReceive(state_out.buffer, 0, StateObject.BufferSize, 0,
+                    new AsyncCallback(ReadCallback), state_out);
                 }
                 else//clientshutdown
                 {
                     SbizServerController.OnModelChanged(this, new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.NOT_CONNECTED));
                     Start();
                 }
-
-                SbizServerModel.ModelSyncEvent.Set();
             }
         }
         #endregion
