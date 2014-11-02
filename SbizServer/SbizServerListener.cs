@@ -113,11 +113,29 @@ namespace SbizServer
 
                 if (bytesRead > 0)
                 {
-                    SbizServerModel.TCPBufferQueue.Enqueue(state.buffer);
-                    SbizServerModel.ModelSyncEvent.Set();
+                    /* NB there was previously a protocol error as size of the data buffer was not sent, causing
+                     * some data to not be processed by server.
+                     */
+                    int seek=0;
+                    while(seek < bytesRead){
+                        //First four bytes are the size of the subsequent databuffer
+                        byte[] datasize_byte = new byte[sizeof(Int32)];
+                        Array.Copy(state.buffer, seek, datasize_byte, 0, sizeof(Int32));
+                        seek += sizeof(Int32);
+                        Int32 datasize = BitConverter.ToInt32(datasize_byte, 0);
+
+                        //Databuffer handled here
+                        byte[] data = new byte[datasize];
+                        Array.Copy(state.buffer, seek, data, 0, datasize);
+                        seek += datasize;
+                        SbizServerModel.TCPBufferQueue.Enqueue(data);
+                        SbizServerModel.ModelSyncEvent.Set();
+                    }
                     //Get new data
-                    handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                    new AsyncCallback(ReadCallback), state);
+                    StateObject state_out = new StateObject();
+                    state_out.s_conn = handler;
+                    handler.BeginReceive(state_out.buffer, 0, StateObject.BufferSize, 0,
+                    new AsyncCallback(ReadCallback), state_out);
                 }
                 else//clientshutdown
                 {

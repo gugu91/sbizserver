@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SbizServerAnnouncer.cs" />
     <Compile Include="SbizServerController.cs" />
     <Compile Include="SbizServerModel.cs" />
     <Compile Include="SbizServerListener.cs" />
