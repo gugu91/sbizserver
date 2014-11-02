@@ -57,6 +57,7 @@ namespace SbizServer
 
         public static void Start()
         {
+            Listening = true;
             SbizServerModel.Start();
         }
 
@@ -64,6 +65,13 @@ namespace SbizServer
         {
             Listening = false;
             SbizServerModel.Stop();
+        }
+
+        public static void ModelRestart()
+        {
+            SbizServerController.Stop();
+            SbizServerController.Init();
+            SbizServerController.Start();
         }
 
         public static void RegisterView(SbizForm view) //Call this from a view to subscribe the event

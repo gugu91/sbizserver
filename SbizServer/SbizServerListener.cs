@@ -15,7 +15,14 @@ namespace SbizServer
     {
         #region Attributes
         private Socket s_listen;
+        private Socket s_conn;
         #endregion
+
+        public SbizServerListener()
+        {
+            s_listen = null;
+            s_conn = null;
+        }
 
         #region InstanceMethods
         /// <summary>
@@ -49,8 +56,16 @@ namespace SbizServer
         /// </summary>
         public void Stop()
         {
-            s_listen.Shutdown(SocketShutdown.Both);
-            s_listen.Close();
+            if (s_conn != null)
+            {
+                s_conn.Shutdown(SocketShutdown.Both);
+                s_conn.Close();
+                s_conn = null;
+            }
+            if (s_listen != null)
+            {
+                s_listen.Close();
+            }
             SbizServerController.OnModelChanged(this, new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.NOT_LISTENING));
         }
 
@@ -60,7 +75,18 @@ namespace SbizServer
             if (SbizServerController.Listening)
             {
                 Socket listener = (Socket)ar.AsyncState;
-                Socket handler = listener.EndAccept(ar);
+                Socket handler = null;
+                try
+                {
+                    handler = listener.EndAccept(ar);
+                }
+                catch (ObjectDisposedException ode) //user changed port
+                {
+                    SbizLogger.Logger = "User changed port";
+                    return;
+                }
+                
+                s_conn = handler;
 
                 SbizServerController.OnModelChanged(this, new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.CONNECTED));
 
@@ -88,6 +114,7 @@ namespace SbizServer
                 if (bytesRead > 0)
                 {
                     SbizServerModel.TCPBufferQueue.Enqueue(state.buffer);
+                    SbizServerModel.ModelSyncEvent.Set();
                     //Get new data
                     handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                     new AsyncCallback(ReadCallback), state);
@@ -97,8 +124,6 @@ namespace SbizServer
                     SbizServerController.OnModelChanged(this, new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.NOT_CONNECTED));
                     Start();
                 }
-
-                SbizServerModel.ModelSyncEvent.Set();
             }
         }
         #endregion

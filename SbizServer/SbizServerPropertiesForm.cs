@@ -73,9 +73,7 @@ namespace SbizServer
             if (SbizConf.SbizSocketPort != Convert.ToInt32(SbizServerSetPortNumericUpDown.Value))
             {
                 SbizConf.SbizSocketPort = Convert.ToInt32(SbizServerSetPortNumericUpDown.Value);
-                SbizServerController.Stop();
-                SbizServerController.Init();
-                SbizServerController.Start();
+                SbizServerController.ModelRestart();
             }
         }
 
@@ -86,8 +84,7 @@ namespace SbizServer
 
         private void SbizServerStopConnectionButton_Click(object sender, EventArgs e)
         {
-            //SbizServerController.Stop();
-            this.SbizServerCleanup();
+            SbizServerController.ModelRestart();
         }
 
         private void SbizServerFormClosing(object sender, FormClosingEventArgs e)
