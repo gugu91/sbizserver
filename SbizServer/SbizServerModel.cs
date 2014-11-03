@@ -63,9 +63,9 @@ namespace SbizServer
 
         private static void Task()
         {
+            _listener.Start();
             while (SbizServerController.Listening)
             {
-                _listener.Start();
                 ModelSyncEvent.WaitOne();
 
                 byte[] buffer = null;
@@ -82,6 +82,11 @@ namespace SbizServer
             {
                 string tmp = Encoding.UTF8.GetString(m.Data, 0, m.Data.Length);
                 System.Windows.Forms.SendKeys.SendWait(tmp);
+            }
+
+            if (m.Code == SbizMessageConst.MOUSE_MOVE)
+            {
+                //Cursor.Position = new Point(Cursor.Position.X - 50, Cursor.Position.Y - 50);
             }
 
             //Add other events...

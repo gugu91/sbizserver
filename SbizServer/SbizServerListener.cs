@@ -140,7 +140,8 @@ namespace SbizServer
                 else//clientshutdown
                 {
                     SbizServerController.OnModelChanged(this, new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.NOT_CONNECTED));
-                    Start();
+                    s_conn = null;
+                    s_listen.BeginAccept(AcceptCallback, s_listen);
                 }
             }
         }
