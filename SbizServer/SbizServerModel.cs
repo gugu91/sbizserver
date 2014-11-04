@@ -9,6 +9,7 @@ using System.Collections.Concurrent;
 using Sbiz.Library;
 using System.Net;
 using System.Net.Sockets;
+using System.Windows.Forms;
 using Sbiz.Library;
 
 namespace SbizServer
@@ -86,7 +87,8 @@ namespace SbizServer
 
             if (m.Code == SbizMessageConst.MOUSE_MOVE)
             {
-                //Cursor.Position = new Point(Cursor.Position.X - 50, Cursor.Position.Y - 50);
+                SbizMouseEventArgs smea = new SbizMouseEventArgs(m.Data);
+                Cursor.Position = smea.Location;
             }
 
             //Add other events...
