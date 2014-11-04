@@ -52,7 +52,7 @@ namespace SbizServer
         public static void Init()
         {
             Listening = true;
-            SbizServerModel.Init();
+            //SbizServerModel.Init();
         }
 
         public static void Start()
@@ -70,7 +70,7 @@ namespace SbizServer
         public static void ModelRestart()
         {
             SbizServerController.Stop();
-            SbizServerController.Init();
+            //SbizServerController.Init();
             SbizServerController.Start();
         }
 

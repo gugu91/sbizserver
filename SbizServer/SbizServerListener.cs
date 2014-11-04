@@ -122,7 +122,7 @@ namespace SbizServer
                         byte[] datasize_byte = new byte[sizeof(Int32)];
                         Array.Copy(state.buffer, seek, datasize_byte, 0, sizeof(Int32));
                         seek += sizeof(Int32);
-                        Int32 datasize = BitConverter.ToInt32(datasize_byte, 0);
+                        Int32 datasize = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(datasize_byte, 0));
 
                         //Databuffer handled here
                         byte[] data = new byte[datasize];

@@ -15,11 +15,11 @@ namespace SbizServer
 {
     static class SbizServerModel
     {
-        public static Thread background_thread;
+        //public static Thread background_thread;
         //private static SbizQueue<byte[]> _tcp_buffer_queue;
-        private static AutoResetEvent _model_sync_event;
+        //private static AutoResetEvent _model_sync_event;
         private static SbizServerListener _listener;
-
+        /*
         public static AutoResetEvent ModelSyncEvent
         {
             get
@@ -27,7 +27,7 @@ namespace SbizServer
                 return _model_sync_event;
             }
         }
-        /*
+        
         public static SbizQueue<byte[]> TCPBufferQueue
         {
             get
@@ -39,42 +39,45 @@ namespace SbizServer
         public static void Init()
         {
             _listener = new SbizServerListener();
-            background_thread = null;
+            //background_thread = null;
             //_tcp_buffer_queue = new SbizQueue<byte[]>();
-            _model_sync_event = new AutoResetEvent(false);
+            //_model_sync_event = new AutoResetEvent(false);
         }
 
         public static void Start()
         {
-            if (background_thread == null)
-            {
-                _listener.Listen(SbizConf.SbizSocketPort);//called here beacause SbizConf is not thread safe
-                background_thread = new Thread(() => Task());
-                background_thread.Start();
-            }
+            //if (background_thread == null)
+            //{
+            _listener = new SbizServerListener();
+                _listener.Listen(SbizConf.SbizSocketPort);
+                _listener.Start();
+              //  background_thread = new Thread(() => Task());
+              //  background_thread.Start();
+           // }
         }
 
         public static void Stop()
         {
-            SbizServerModel.ModelSyncEvent.Set();
-            background_thread.Join();
-            background_thread = null;
+           // SbizServerModel.ModelSyncEvent.Set();
+            //background_thread.Join();
+            //background_thread = null;
+            _listener.Stop();
         }
-
+        /*
         private static void Task()
         {
             _listener.Start();
             while (SbizServerController.Listening)
             {
                 ModelSyncEvent.WaitOne();
-                /*
+                
                 byte[] buffer = null;
                 if (SbizServerModel.TCPBufferQueue.Dequeue(ref buffer)) MessageHandle(new SbizMessage(buffer));
-                 * */
+                
             }
 
             _listener.Stop();
-        }
+        }*/
 
 
         public static void MessageHandle(SbizMessage m)
