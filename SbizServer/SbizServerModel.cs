@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.IO;
 using System.Collections.Concurrent;
-using Sbiz.Library;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
@@ -17,7 +16,7 @@ namespace SbizServer
     static class SbizServerModel
     {
         public static Thread background_thread;
-        private static SbizQueue<byte[]> _tcp_buffer_queue;
+        //private static SbizQueue<byte[]> _tcp_buffer_queue;
         private static AutoResetEvent _model_sync_event;
         private static SbizServerListener _listener;
 
@@ -28,7 +27,7 @@ namespace SbizServer
                 return _model_sync_event;
             }
         }
-
+        /*
         public static SbizQueue<byte[]> TCPBufferQueue
         {
             get
@@ -36,12 +35,12 @@ namespace SbizServer
                 return _tcp_buffer_queue;
             }
         }
-
+        */
         public static void Init()
         {
             _listener = new SbizServerListener();
             background_thread = null;
-            _tcp_buffer_queue = new SbizQueue<byte[]>();
+            //_tcp_buffer_queue = new SbizQueue<byte[]>();
             _model_sync_event = new AutoResetEvent(false);
         }
 
@@ -68,9 +67,10 @@ namespace SbizServer
             while (SbizServerController.Listening)
             {
                 ModelSyncEvent.WaitOne();
-
+                /*
                 byte[] buffer = null;
                 if (SbizServerModel.TCPBufferQueue.Dequeue(ref buffer)) MessageHandle(new SbizMessage(buffer));
+                 * */
             }
 
             _listener.Stop();

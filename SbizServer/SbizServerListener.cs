@@ -128,8 +128,7 @@ namespace SbizServer
                         byte[] data = new byte[datasize];
                         Array.Copy(state.buffer, seek, data, 0, datasize);
                         seek += datasize;
-                        SbizServerModel.TCPBufferQueue.Enqueue(data);
-                        SbizServerModel.ModelSyncEvent.Set();
+                        SbizServerModel.MessageHandle(new SbizMessage(data));
                     }
                     //Get new data
                     StateObject state_out = new StateObject();
