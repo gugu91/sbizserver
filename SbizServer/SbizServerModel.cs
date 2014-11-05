@@ -102,7 +102,6 @@ namespace SbizServer
 
         public static void SimulateMouseEvent(SbizMouseEventArgs smea)
         {
-            //_simulator.Mouse.MoveMouseTo(smea.Location.X, smea.Location.Y);
             Cursor.Position = smea.Location;
             if (smea.Button == MouseButtons.Left)
             {

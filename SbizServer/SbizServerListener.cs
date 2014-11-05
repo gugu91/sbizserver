@@ -108,8 +108,18 @@ namespace SbizServer
 
                 Socket handler = state.s_conn;
 
-                // Read data from the client socket. 
-                int bytesRead = handler.EndReceive(ar);
+                int bytesRead;
+                try
+                {
+                    // Read data from the client socket. 
+                    bytesRead = handler.EndReceive(ar);
+                }
+
+                catch (ObjectDisposedException) //user stopped connection
+                {
+                    SbizLogger.Logger = "User stopped connection";
+                    bytesRead = -1;
+                }
 
                 if (bytesRead > 0)
                 {
