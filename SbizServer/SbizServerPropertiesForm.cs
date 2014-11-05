@@ -14,6 +14,9 @@ namespace SbizServer
 {
     public partial class SbizServerPropertiesForm : Form, SbizForm
     {
+        private Icon SbizServerIconGreen = new Icon("ico\\SbizServerIconGreen.ico");
+        private Icon SbizServerIconRed = new Icon("ico\\SbizServerIconRed.ico");
+        private Icon SbizServerIconYellow = new Icon("ico\\SbizServerIconYellow.ico");
         public SbizServerPropertiesForm()
         {
             InitializeComponent();
@@ -60,6 +63,8 @@ namespace SbizServer
                     SbizServerSetPortNumericUpDown.Enabled = false;
                     SbizServerNotifyIcon.ShowBalloonTip(500, "SbizServer", "\nClient connected", ToolTipIcon.Info);
                     SbizServerNotifyIcon.Visible = true;
+                    SbizServerNotifyIcon.Icon = SbizServerIconGreen;
+                    this.Icon = SbizServerIconGreen;
                     Hide();
                 }
                 else
@@ -70,6 +75,8 @@ namespace SbizServer
                     SbizServerSetPortButton.Enabled = true;
                     SbizServerSetPortNumericUpDown.Enabled = true;
                     SbizServerNotifyIcon.Visible = false;
+                    SbizServerNotifyIcon.Icon = SbizServerIconRed;
+                    this.Icon = SbizServerIconRed;
                     Show();
                 }
             }
