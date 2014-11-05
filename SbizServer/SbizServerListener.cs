@@ -108,8 +108,18 @@ namespace SbizServer
 
                 Socket handler = state.s_conn;
 
-                // Read data from the client socket. 
-                int bytesRead = handler.EndReceive(ar);
+                int bytesRead;
+                try
+                {
+                    // Read data from the client socket. 
+                    bytesRead = handler.EndReceive(ar);
+                }
+
+                catch (ObjectDisposedException) //user stopped connection
+                {
+                    SbizLogger.Logger = "User stopped connection";
+                    bytesRead = -1;
+                }
 
                 if (bytesRead > 0)
                 {
@@ -122,14 +132,13 @@ namespace SbizServer
                         byte[] datasize_byte = new byte[sizeof(Int32)];
                         Array.Copy(state.buffer, seek, datasize_byte, 0, sizeof(Int32));
                         seek += sizeof(Int32);
-                        Int32 datasize = BitConverter.ToInt32(datasize_byte, 0);
+                        Int32 datasize = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(datasize_byte, 0));
 
                         //Databuffer handled here
                         byte[] data = new byte[datasize];
                         Array.Copy(state.buffer, seek, data, 0, datasize);
                         seek += datasize;
-                        SbizServerModel.TCPBufferQueue.Enqueue(data);
-                        SbizServerModel.ModelSyncEvent.Set();
+                        SbizServerModel.MessageHandle(new SbizMessage(data));
                     }
                     //Get new data
                     StateObject state_out = new StateObject();
@@ -140,7 +149,8 @@ namespace SbizServer
                 else//clientshutdown
                 {
                     SbizServerController.OnModelChanged(this, new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.NOT_CONNECTED));
-                    Start();
+                    s_conn = null;
+                    s_listen.BeginAccept(AcceptCallback, s_listen);
                 }
             }
         }
@@ -151,7 +161,7 @@ namespace SbizServer
         {
             public Socket s_conn;
             // Size of receive buffer.
-            public const int BufferSize = 1024;
+            public const int BufferSize = 4096;
             // Receive buffer.
             public byte[] buffer = new byte[BufferSize];
         }

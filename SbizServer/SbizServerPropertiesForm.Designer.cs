@@ -45,7 +45,6 @@
             // 
             this.SbizServerNotifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("SbizServerNotifyIcon.Icon")));
             this.SbizServerNotifyIcon.Text = "Sbiz Server";
-            this.SbizServerNotifyIcon.Visible = true;
             this.SbizServerNotifyIcon.DoubleClick += new System.EventHandler(this.SbizServerNotifyIcon_DoubleClick);
             // 
             // SbizServerConnectionStatusLabel

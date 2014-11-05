@@ -14,6 +14,9 @@ namespace SbizServer
 {
     public partial class SbizServerPropertiesForm : Form, SbizForm
     {
+        private Icon SbizServerIconGreen = new Icon("ico\\SbizServerIconGreen.ico");
+        private Icon SbizServerIconRed = new Icon("ico\\SbizServerIconRed.ico");
+        private Icon SbizServerIconYellow = new Icon("ico\\SbizServerIconYellow.ico");
         public SbizServerPropertiesForm()
         {
             InitializeComponent();
@@ -26,12 +29,17 @@ namespace SbizServer
         private void SbizServerForm_Resize(object sender, EventArgs e)
         {
             if (FormWindowState.Minimized == WindowState)
+            {
+                SbizServerNotifyIcon.Visible = true;
+                SbizServerNotifyIcon.ShowBalloonTip(500, "SbizServer", "\nMinimized to tray icon,\ndouble click to open\nproperties window", ToolTipIcon.Info);
                 Hide();
+            }
         }
 
         private void SbizServerNotifyIcon_DoubleClick(object sender, EventArgs e)
         {
             Show();
+            SbizServerNotifyIcon.Visible = false;
             WindowState = FormWindowState.Normal;
         }
 
@@ -48,21 +56,27 @@ namespace SbizServer
             {
                 if (args.Status == SbizModelChanged_EventArgs.CONNECTED)
                 {
-                    SbizServerConnectionStatusLabel.Text = "Connesso";
+                    SbizServerConnectionStatusLabel.Text = "Connected";
                     SbizServerConnectionStatusLabel.ForeColor = Color.Green;
                     SbizServerStopConnectionButton.Enabled = true;
                     SbizServerSetPortButton.Enabled = false;
                     SbizServerSetPortNumericUpDown.Enabled = false;
-                    SbizServerNotifyIcon.ShowBalloonTip(1000, "Client connected", " ", ToolTipIcon.Info);
+                    SbizServerNotifyIcon.ShowBalloonTip(500, "SbizServer", "\nClient connected", ToolTipIcon.Info);
+                    SbizServerNotifyIcon.Visible = true;
+                    SbizServerNotifyIcon.Icon = SbizServerIconGreen;
+                    this.Icon = SbizServerIconGreen;
                     Hide();
                 }
                 else
                 {
-                    SbizServerConnectionStatusLabel.Text = "Non Connesso";
+                    SbizServerConnectionStatusLabel.Text = "Not Connected";
                     SbizServerConnectionStatusLabel.ForeColor = Color.Red;
                     SbizServerStopConnectionButton.Enabled = false;
                     SbizServerSetPortButton.Enabled = true;
                     SbizServerSetPortNumericUpDown.Enabled = true;
+                    SbizServerNotifyIcon.Visible = false;
+                    SbizServerNotifyIcon.Icon = SbizServerIconRed;
+                    this.Icon = SbizServerIconRed;
                     Show();
                 }
             }
@@ -95,6 +109,9 @@ namespace SbizServer
         private void SbizServerCleanup()
         {
             SbizServerController.Stop();
+            SbizServerNotifyIcon.Visible = false;
+            SbizServerNotifyIcon.Icon = null;
+            SbizServerNotifyIcon.Dispose();
         }
     }
 }
