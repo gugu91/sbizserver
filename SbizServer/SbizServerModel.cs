@@ -116,10 +116,7 @@ namespace SbizServer
                 for (int i = 0; i < smea.Clicks; i++) _simulator.Mouse.RightButtonClick();
             }
 
-            if (smea.Delta > 0)
-            {
-                _simulator.Mouse.VerticalScroll(smea.Delta);
-            }
+            _simulator.Mouse.VerticalScroll(smea.Delta);
         }
     }
 
