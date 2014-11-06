@@ -91,32 +91,62 @@ namespace SbizServer
                 System.Windows.Forms.SendKeys.SendWait(tmp);
             }
 
-            if (m.Code == SbizMessageConst.MOUSE_MOVE)
+            if (m.Code == SbizMessageConst.MOUSE_MOVE || m.Code == SbizMessageConst.MOUSE_UP || 
+                m.Code == SbizMessageConst.MOUSE_DOWN || m.Code == SbizMessageConst.MOUSE_WHEEL)
             {
                 SbizMouseEventArgs smea = new SbizMouseEventArgs(m.Data);
-                SimulateMouseEvent(smea);
+                SimulateMouseEvent(m.Code, smea);
             }
 
             //Add other events...
         }
 
-        public static void SimulateMouseEvent(SbizMouseEventArgs smea)
+        public static void SimulateMouseEvent(int code, SbizMouseEventArgs smea)
         {
             Cursor.Position = smea.Location;
-            if (smea.Button == MouseButtons.Left)
+            switch (code)
             {
-                for (int i = 0; i < smea.Clicks; i++) _simulator.Mouse.LeftButtonClick();
-            }
-            else if(smea.Button == MouseButtons.Middle)
-            {
-                for (int i = 0; i < smea.Clicks; i++) _simulator.Mouse.MiddleButtonClick();
-            }
-            else if(smea.Button == MouseButtons.Right)
-            {
-                for (int i = 0; i < smea.Clicks; i++) _simulator.Mouse.RightButtonClick();
-            }
+                case SbizMessageConst.MOUSE_MOVE:
+                    break;
+                case SbizMessageConst.MOUSE_DOWN:
+                    switch (smea.Button)
+                    {
+                        case MouseButtons.Left:
+                            _simulator.Mouse.LeftButtonDown();
+                            break;
+                        case MouseButtons.Middle:
+                            _simulator.Mouse.MiddleButtonDown();
+                            break;
+                        case MouseButtons.Right:
+                            _simulator.Mouse.RightButtonDown();
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case SbizMessageConst.MOUSE_UP:
+                    switch (smea.Button)
+                    {
+                        case MouseButtons.Left:
+                            _simulator.Mouse.LeftButtonUp();
+                            break;
+                        case MouseButtons.Middle:
+                            _simulator.Mouse.MiddleButtonUp();
+                            break;
+                        case MouseButtons.Right:
+                            _simulator.Mouse.RightButtonUp();
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case SbizMessageConst.MOUSE_WHEEL:
+                    _simulator.Mouse.VerticalScroll(smea.Delta);
+                    break;
+                default:
+                    break;
 
-            _simulator.Mouse.VerticalScroll(smea.Delta);
+            }
         }
     }
 
