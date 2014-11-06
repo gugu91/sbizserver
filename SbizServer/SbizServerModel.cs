@@ -22,6 +22,7 @@ namespace SbizServer
         //private static AutoResetEvent _model_sync_event;
         private static SbizServerListener _listener;
         private static InputSimulator _simulator = new InputSimulator();
+        private static SbizServerAnnouncer _announcer = new SbizServerAnnouncer();
         /*
         public static AutoResetEvent ModelSyncEvent
         {
@@ -53,8 +54,10 @@ namespace SbizServer
             //if (background_thread == null)
             //{
             _listener = new SbizServerListener();
+            _announcer = new SbizServerAnnouncer();
                 _listener.Listen(SbizConf.SbizSocketPort);
                 _listener.Start();
+                _announcer.Start(SbizConf.SbizSocketPort, SbizConf.SbizSocketPort);
               //  background_thread = new Thread(() => Task());
               //  background_thread.Start();
            // }
@@ -66,6 +69,7 @@ namespace SbizServer
             //background_thread.Join();
             //background_thread = null;
             _listener.Stop();
+            _announcer.Stop();
         }
         /*
         private static void Task()
