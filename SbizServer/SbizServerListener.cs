@@ -115,7 +115,7 @@ namespace SbizServer
                     bytesRead = handler.EndReceive(ar);
                 }
 
-                catch (ObjectDisposedException) //user stopped connection
+                catch (Exception) //user stopped connection
                 {
                     SbizLogger.Logger = "User stopped connection";
                     bytesRead = -1;
