@@ -21,7 +21,8 @@ namespace SbizServer
         public void Start(int UDPPort, int TCPPort){
             var ipe = new IPEndPoint(IPAddress.Parse("255.255.255.255"), UDPPort);
             s_announce = new Socket(ipe.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
-            byte[] buffer = (SbizMessage.AnnounceMessage(TCPPort));
+            byte[] data = (SbizAnnounce.NewToByteArray(SbizConf.MyName, TCPPort));
+            byte[] buffer = SbizNetUtils.EncapsulateInt32inByteArray(data, data.Length);
             BeginSendToState state = new BeginSendToState(s_announce, buffer, ipe);
             
             s_announce.Bind(new IPEndPoint(IPAddress.Any, UDPPort));
