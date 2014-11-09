@@ -58,7 +58,7 @@ namespace SbizServer
         public static void Start()
         {
             Listening = true;
-            SbizServerModel.Start();
+            SbizServerModel.Start(Properties.Settings.Default.TCPPort, Properties.Settings.Default.UDPPort, Properties.Settings.Default.ServerName);
         }
 
         public static void Stop()
@@ -66,14 +66,6 @@ namespace SbizServer
             Listening = false;
             SbizServerModel.Stop();
         }
-
-        public static void ModelRestart()
-        {
-            SbizServerController.Stop();
-            //SbizServerController.Init();
-            SbizServerController.Start();
-        }
-
         public static void RegisterView(SbizForm view) //Call this from a view to subscribe the event
         {
             ModelChanged += new SbizModelChanged_Delegate(view.UpdateViewOnModelChanged);

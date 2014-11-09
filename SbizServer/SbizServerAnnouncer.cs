@@ -18,10 +18,10 @@ namespace SbizServer
             s_announce = null;
         }
 
-        public void Start(int UDPPort, int TCPPort){
+        public void Start(int TCPPort, int UDPPort, string name){
             var ipe = new IPEndPoint(IPAddress.Parse("255.255.255.255"), UDPPort);
             s_announce = new Socket(ipe.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
-            byte[] data = (SbizAnnounce.NewToByteArray(SbizConf.MyName, TCPPort));
+            byte[] data = (SbizAnnounce.NewToByteArray(name, TCPPort));
             byte[] buffer = SbizNetUtils.EncapsulateInt32inByteArray(data, data.Length);
             BeginSendToState state = new BeginSendToState(s_announce, buffer, ipe);
             
@@ -29,7 +29,13 @@ namespace SbizServer
             s_announce.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, true);
             s_announce.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.DontRoute, true);
             s_announce.Ttl = 1;
-            s_announce.BeginSendTo(buffer, 0, buffer.Length, SocketFlags.None, ipe, BeginSendToCallback, state);
+            try{
+                s_announce.BeginSendTo(buffer, 0, buffer.Length, SocketFlags.None, ipe, BeginSendToCallback, state);
+            }
+            catch (Exception)
+            {
+                //User changed port or closed app, do nothing
+            }
         }
 
         public void Stop()
@@ -51,7 +57,14 @@ namespace SbizServer
                 BeginSendToState state = (BeginSendToState)ar.AsyncState;
                 state._s.EndSendTo(ar);
                 Thread.Sleep(ANNOUNCE_INTERVAL);
+                try
+                {
                     state._s.BeginSendTo(state._buffer, 0, state._buffer.Length, SocketFlags.None, state._ipe, BeginSendToCallback, state);
+                }
+                catch (Exception)
+                {
+                    //User changed port or closed app, do nothing
+                }
             }
         }
 
