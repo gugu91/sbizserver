@@ -44,10 +44,9 @@ namespace SbizServer
         }
         public static void MessageHandle(SbizMessage m)
         {
-            if (m.Code == SbizMessageConst.KEY_PRESS)
+            if (m.Code == SbizMessageConst.KEY_PRESS || m.Code == SbizMessageConst.KEY_DOWN || m.Code == SbizMessageConst.KEY_UP)
             {
-                string tmp = Encoding.UTF8.GetString(m.Data, 0, m.Data.Length);
-                System.Windows.Forms.SendKeys.SendWait(tmp);
+                SimulateKeyboardEvent(m.Code, m.Data);
             }
 
             if (m.Code == SbizMessageConst.MOUSE_MOVE || m.Code == SbizMessageConst.MOUSE_UP || 
@@ -106,6 +105,20 @@ namespace SbizServer
                     break;
 
             }
+        }
+
+        public static void SimulateKeyboardEvent(int message_code, byte[] data)
+        {
+            //string tmp = Encoding.UTF8.GetString(data, 0, data.Length);
+            //System.Windows.Forms.SendKeys.SendWait(tmp);
+
+            var key = SbizNetUtils.DecapsulateInt32FromByteArray(ref data);
+            if (message_code == SbizMessageConst.KEY_DOWN) 
+                _simulator.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode) key);
+            //if (key_code == SbizMessageConst.KEY_PRESS) _simulator.Keyboard.KeyPress();
+            if (message_code == SbizMessageConst.KEY_UP) 
+                _simulator.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode) key);
+
         }
     }
 
