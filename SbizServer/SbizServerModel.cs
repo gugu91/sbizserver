@@ -21,7 +21,6 @@ namespace SbizServer
         private static InputSimulator _simulator = new InputSimulator();
         private static SbizServerAnnouncer _announcer = new SbizServerAnnouncer();
 
-
         public static void Init()
         {
             _listener = new SbizServerListener();
@@ -30,17 +29,19 @@ namespace SbizServer
 
         public static void Start(int TCPPort, int UDPPort, string servername)
         {
+            KeyboardCleanup();
             _listener = new SbizServerListener();
             _announcer = new SbizServerAnnouncer();
-                _listener.Listen(TCPPort);
-                _listener.Start();
-                _announcer.Start(TCPPort, UDPPort, servername);
+            _listener.Listen(TCPPort);
+            _listener.Start();
+            _announcer.Start(TCPPort, UDPPort, servername);
         }
 
         public static void Stop()
         {
             _listener.Stop();
             _announcer.Stop();
+            KeyboardCleanup();
         }
         public static void MessageHandle(SbizMessage m)
         {
@@ -112,13 +113,17 @@ namespace SbizServer
             //string tmp = Encoding.UTF8.GetString(data, 0, data.Length);
             //System.Windows.Forms.SendKeys.SendWait(tmp);
 
-            var key = SbizNetUtils.DecapsulateInt32FromByteArray(ref data);
-            if (message_code == SbizMessageConst.KEY_DOWN) 
-                _simulator.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode) key);
-            //if (key_code == SbizMessageConst.KEY_PRESS) _simulator.Keyboard.KeyPress();
-            if (message_code == SbizMessageConst.KEY_UP) 
-                _simulator.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode) key);
+            var key = SbizNetUtils.DecapsulateInt16FromByteArray(ref data);
+            if (message_code == SbizMessageConst.KEY_DOWN) _simulator.Keyboard.KeyDown((WindowsInput.Native.VirtualKeyCode)key);
 
+
+            //if (key_code == SbizMessageConst.KEY_PRESS) _simulator.Keyboard.KeyPress();
+            if (message_code == SbizMessageConst.KEY_UP) _simulator.Keyboard.KeyUp((WindowsInput.Native.VirtualKeyCode)key);
+        }
+        private static void KeyboardCleanup()
+        {
+            _simulator.Keyboard.KeyUp(WindowsInput.Native.VirtualKeyCode.CONTROL);
+            _simulator.Keyboard.KeyUp(WindowsInput.Native.VirtualKeyCode.MENU);
         }
     }
 
