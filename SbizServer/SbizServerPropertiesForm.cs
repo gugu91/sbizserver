@@ -63,7 +63,7 @@ namespace SbizServer
                 else if (args.Status == SbizModelChanged_EventArgs.TARGET)
                 {
                     this.Icon = SbizServerIconYellow;
-                    SbizServerNotifyIcon.Icon = SbizServerIconYellow;
+                    SbizServerNotifyIcon.Icon = SbizServerIconGreen;
                 }
                 else if (args.Status == SbizModelChanged_EventArgs.NOT_TARGET)
                 {
