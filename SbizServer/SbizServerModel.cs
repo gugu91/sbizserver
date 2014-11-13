@@ -45,16 +45,20 @@ namespace SbizServer
         }
         public static void MessageHandle(SbizMessage m)
         {
-            if (m.Code == SbizMessageConst.KEY_PRESS || m.Code == SbizMessageConst.KEY_DOWN || m.Code == SbizMessageConst.KEY_UP)
+            if (SbizMessageConst.IsKeyConst(m.Code))
             {
                 SimulateKeyboardEvent(m.Code, m.Data);
             }
 
-            if (m.Code == SbizMessageConst.MOUSE_MOVE || m.Code == SbizMessageConst.MOUSE_UP || 
-                m.Code == SbizMessageConst.MOUSE_DOWN || m.Code == SbizMessageConst.MOUSE_WHEEL)
+            if (SbizMessageConst.IsMouseConst(m.Code))
             {
                 SbizMouseEventArgs smea = new SbizMouseEventArgs(m.Data);
                 SimulateMouseEvent(m.Code, smea);
+            }
+
+            if (SbizMessageConst.IsClipboardConst(m.Code))
+            {
+                SbizClipboardHandler.HandleClipboardSbizMessage(m);
             }
 
             //Add other events...
