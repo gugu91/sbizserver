@@ -47,7 +47,8 @@ namespace SbizServer
                     SbizServerSetUDPPortNumericUpDown.Enabled = false;
                     SbizServerServerNameTextbox.Enabled = false;
                 }
-                else
+                else if (args.Status == SbizModelChanged_EventArgs.ERROR ||
+                    args.Status == SbizModelChanged_EventArgs.NOT_CONNECTED)
                 {
                     SbizServerConnectionStatusLabel.Text = "Not Connected";
                     SbizServerConnectionStatusLabel.ForeColor = Color.Red;
