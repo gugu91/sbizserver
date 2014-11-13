@@ -20,19 +20,9 @@ namespace SbizServer
         public SbizServerPropertiesForm()
         {
             InitializeComponent();
-            SbizServerSetUDPPortNumericUpDown.Value = Properties.Settings.Default.UDPPort;
-            SbizServerSetTCPPortNumericUpDown.Value = Properties.Settings.Default.TCPPort;
-            SbizServerServerNameTextbox.Text = Properties.Settings.Default.ServerName;
             SbizServerController.Init();
             SbizServerController.RegisterView(this);
-            SbizServerController.Start();
-        }
-
-        protected override void WndProc(ref Message m)
-        {
-            base.WndProc(ref m);
-
-            SbizServerController.WndProcOverride(m);
+            SbizServerController.Start(this.sbizServerPropertiesUC1.Handle);
         }
 
         private void SbizServerForm_Resize(object sender, EventArgs e)
@@ -65,14 +55,7 @@ namespace SbizServer
             {
                 if (args.Status == SbizModelChanged_EventArgs.CONNECTED)
                 {
-                    SbizServerConnectionStatusLabel.Text = "Connected";
-                    SbizServerConnectionStatusLabel.ForeColor = Color.Green;
-                    SbizServerStopConnectionButton.Enabled = true;
-                    SbizServerApplySettingsButton.Enabled = false;
-                    SbizServerSetTCPPortNumericUpDown.Enabled = false;
-                    SbizServerSetUDPPortNumericUpDown.Enabled = false;
-                    SbizServerServerNameTextbox.Enabled = false;
-                    SbizServerNotifyIcon.ShowBalloonTip(500, "SbizServer", "\nClient connected", ToolTipIcon.Info);
+                    SbizServerNotifyIcon.ShowBalloonTip(500, "SbizServer", "Client connected", ToolTipIcon.Info);
                     SbizServerNotifyIcon.Visible = true;
                     SbizServerNotifyIcon.Icon = SbizServerIconGreen;
                     this.Icon = SbizServerIconGreen;
@@ -80,38 +63,12 @@ namespace SbizServer
                 }
                 else
                 {
-                    SbizServerConnectionStatusLabel.Text = "Not Connected";
-                    SbizServerConnectionStatusLabel.ForeColor = Color.Red;
-                    SbizServerStopConnectionButton.Enabled = false;
-                    SbizServerApplySettingsButton.Enabled = true;
-                    SbizServerSetTCPPortNumericUpDown.Enabled = true;
-                    SbizServerSetUDPPortNumericUpDown.Enabled = true;
-                    SbizServerServerNameTextbox.Enabled = true;
                     SbizServerNotifyIcon.Visible = false;
                     SbizServerNotifyIcon.Icon = SbizServerIconRed;
                     this.Icon = SbizServerIconRed;
                     Show();
                 }
             }
-        }
-        private void SbizServerApplySettingsButton_Click(object sender, EventArgs e)
-        {
-            if (Properties.Settings.Default.TCPPort != Convert.ToInt32(SbizServerSetTCPPortNumericUpDown.Value)||
-                Properties.Settings.Default.UDPPort != Convert.ToInt32(SbizServerSetUDPPortNumericUpDown.Value)||
-                Properties.Settings.Default.ServerName != SbizServerServerNameTextbox.Text)
-            {
-                SbizServerController.Stop();
-                Properties.Settings.Default.TCPPort = Convert.ToInt32(SbizServerSetTCPPortNumericUpDown.Value);
-                Properties.Settings.Default.UDPPort = Convert.ToInt32(SbizServerSetUDPPortNumericUpDown.Value);
-                Properties.Settings.Default.ServerName = SbizServerServerNameTextbox.Text;
-                Properties.Settings.Default.Save();
-                SbizServerController.Start();
-            }
-        }
-        private void SbizServerStopConnectionButton_Click(object sender, EventArgs e)
-        {
-            SbizServerController.Stop();
-            SbizServerController.Start();
         }
 
         private void SbizServerFormClosing(object sender, FormClosingEventArgs e)
@@ -121,15 +78,10 @@ namespace SbizServer
 
         private void SbizServerCleanup()
         {
-            SbizServerController.Stop();
+            SbizServerController.Stop(this.sbizServerPropertiesUC1.Handle);
             SbizServerNotifyIcon.Visible = false;
             SbizServerNotifyIcon.Icon = null;
             SbizServerNotifyIcon.Dispose();
-        }
-
-        private void SbizServerPropertiesForm_Paint(object sender, PaintEventArgs e)
-        {
-            SbizMyIPLabel.Text = "Your IP Address is: " + SbizConf.MyIP;
         }
     }
 }

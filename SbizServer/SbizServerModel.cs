@@ -27,13 +27,13 @@ namespace SbizServer
             _simulator = new InputSimulator();
         }
 
-        public static void Start(int TCPPort, int UDPPort, string servername)
+        public static void Start(int TCPPort, int UDPPort, string servername, IntPtr view_handle)
         {
             KeyboardCleanup();
             _listener = new SbizMessager();
             _announcer = new SbizServerAnnouncer();
             _listener.Listen(TCPPort);
-            _listener.StartServer(SbizServerController.OnModelChanged);
+            _listener.StartServer(SbizServerController.OnModelChanged, view_handle);
             _announcer.Start(TCPPort, UDPPort, servername);
         }
 
@@ -54,11 +54,6 @@ namespace SbizServer
             {
                 SbizMouseEventArgs smea = new SbizMouseEventArgs(m.Data);
                 SimulateMouseEvent(m.Code, smea);
-            }
-
-            if (SbizMessageConst.IsClipboardConst(m.Code))
-            {
-                SbizClipboardHandler.HandleClipboardSbizMessage(m);
             }
 
             //Add other events...

@@ -192,6 +192,7 @@
             this.Controls.Add(this.SbizServerConnectionStatusLabel);
             this.Name = "SbizServerPropertiesUC";
             this.Size = new System.Drawing.Size(245, 336);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.SbizServerPropertiesUC_Paint);
             ((System.ComponentModel.ISupportInitialize)(this.SbizServerSetUDPPortNumericUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SbizServerSetTCPPortNumericUpDown)).EndInit();
             this.ResumeLayout(false);

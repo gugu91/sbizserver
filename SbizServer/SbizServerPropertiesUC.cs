@@ -16,7 +16,17 @@ namespace SbizServer
         public SbizServerPropertiesUC()
         {
             InitializeComponent();
+            SbizServerSetUDPPortNumericUpDown.Value = Properties.Settings.Default.UDPPort;
+            SbizServerSetTCPPortNumericUpDown.Value = Properties.Settings.Default.TCPPort;
+            SbizServerServerNameTextbox.Text = Properties.Settings.Default.ServerName;
             SbizServerController.RegisterView(this);
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+
+            SbizServerController.WndProcOverride(m, this.Handle);
         }
 
         public void UpdateViewOnModelChanged(object sender, SbizModelChanged_EventArgs args)
@@ -36,7 +46,6 @@ namespace SbizServer
                     SbizServerSetTCPPortNumericUpDown.Enabled = false;
                     SbizServerSetUDPPortNumericUpDown.Enabled = false;
                     SbizServerServerNameTextbox.Enabled = false;
-                    Hide();
                 }
                 else
                 {
@@ -47,7 +56,6 @@ namespace SbizServer
                     SbizServerSetTCPPortNumericUpDown.Enabled = true;
                     SbizServerSetUDPPortNumericUpDown.Enabled = true;
                     SbizServerServerNameTextbox.Enabled = true;
-                    Show();
                 }
             }
         }
@@ -57,18 +65,23 @@ namespace SbizServer
                 Properties.Settings.Default.UDPPort != Convert.ToInt32(SbizServerSetUDPPortNumericUpDown.Value) ||
                 Properties.Settings.Default.ServerName != SbizServerServerNameTextbox.Text)
             {
-                SbizServerController.Stop();
+                SbizServerController.Stop(this.Handle);
                 Properties.Settings.Default.TCPPort = Convert.ToInt32(SbizServerSetTCPPortNumericUpDown.Value);
                 Properties.Settings.Default.UDPPort = Convert.ToInt32(SbizServerSetUDPPortNumericUpDown.Value);
                 Properties.Settings.Default.ServerName = SbizServerServerNameTextbox.Text;
                 Properties.Settings.Default.Save();
-                SbizServerController.Start();
+                SbizServerController.Start(this.Handle);
             }
         }
         private void SbizServerStopConnectionButton_Click(object sender, EventArgs e)
         {
-            SbizServerController.Stop();
-            SbizServerController.Start();
+            SbizServerController.Stop(this.Handle);
+            SbizServerController.Start(this.Handle);
+        }
+
+        private void SbizServerPropertiesUC_Paint(object sender, PaintEventArgs e)
+        {
+            SbizMyIPLabel.Text = "Your IP Address is: " + SbizConf.MyIP;
         }
     }
 }
