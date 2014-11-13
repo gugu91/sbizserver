@@ -25,45 +25,19 @@ namespace SbizServer
         }
         #endregion
 
-        private static int _listening;
-        private const int YES = 1;
-        private const int NO = 0;
-
-        public static bool Listening
-        {
-            get
-            {
-                if (_listening == YES) return true;
-                else return false;
-            }
-            set
-            {
-                if (value)
-                {
-                    System.Threading.Interlocked.Exchange(ref _listening, YES);
-                }
-                else
-                {
-                    System.Threading.Interlocked.Exchange(ref _listening, NO);
-                }
-            }
-        }
-
         public static void Init()
         {
-            Listening = true;
+            //SbizServerModel.Listening = true;
             //SbizServerModel.Init();
         }
 
         public static void Start()
         {
-            Listening = true;
             SbizServerModel.Start(Properties.Settings.Default.TCPPort, Properties.Settings.Default.UDPPort, Properties.Settings.Default.ServerName);
         }
 
         public static void Stop()
         {
-            Listening = false;
             SbizServerModel.Stop();
         }
         public static void RegisterView(SbizForm view) //Call this from a view to subscribe the event
@@ -76,6 +50,13 @@ namespace SbizServer
             ModelChanged -= new SbizModelChanged_Delegate(view.UpdateViewOnModelChanged);
         }
 
-
+        public static void WndProcOverride(System.Windows.Forms.Message m)
+        {
+            if (m.Msg == NativeImport.WM_CLIPBOARDUPDATE) //Handling clipboard data
+            {
+                SbizClipboardHandler.SendClipboardData(System.Windows.Forms.Clipboard.GetDataObject(),
+                    SbizServerController.OnModelChanged);
+            }
+        }
     }
 }

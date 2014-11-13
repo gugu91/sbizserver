@@ -28,6 +28,13 @@ namespace SbizServer
             SbizServerController.Start();
         }
 
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+
+            SbizServerController.WndProcOverride(m);
+        }
+
         private void SbizServerForm_Resize(object sender, EventArgs e)
         {
             if (FormWindowState.Minimized == WindowState)
@@ -54,7 +61,7 @@ namespace SbizServer
 
         public void UpdateView(object sender, SbizModelChanged_EventArgs args)
         {
-            if (sender is SbizServerListener)
+            if (sender is SbizMessager)
             {
                 if (args.Status == SbizModelChanged_EventArgs.CONNECTED)
                 {

@@ -17,29 +17,29 @@ namespace SbizServer
 {
     static class SbizServerModel
     {
-        private static SbizServerListener _listener;
+        private static SbizMessager _listener;
         private static InputSimulator _simulator = new InputSimulator();
         private static SbizServerAnnouncer _announcer = new SbizServerAnnouncer();
 
         public static void Init()
         {
-            _listener = new SbizServerListener();
+            _listener = new SbizMessager();
             _simulator = new InputSimulator();
         }
 
         public static void Start(int TCPPort, int UDPPort, string servername)
         {
             KeyboardCleanup();
-            _listener = new SbizServerListener();
+            _listener = new SbizMessager();
             _announcer = new SbizServerAnnouncer();
             _listener.Listen(TCPPort);
-            _listener.Start();
+            _listener.StartServer(SbizServerController.OnModelChanged);
             _announcer.Start(TCPPort, UDPPort, servername);
         }
 
         public static void Stop()
         {
-            _listener.Stop();
+            _listener.StopServer(SbizServerController.OnModelChanged);
             _announcer.Stop();
             KeyboardCleanup();
         }

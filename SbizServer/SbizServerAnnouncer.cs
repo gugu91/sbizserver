@@ -13,12 +13,40 @@ namespace SbizServer
     {
         private Socket s_announce;
         public const int ANNOUNCE_INTERVAL = 500;
+
+        #region Listening
+        private int _listening;
+        private const int YES = 1;
+        private const int NO = 0;
+        public bool Listening
+        {
+            get
+            {
+                if (_listening == YES) return true;
+                else return false;
+            }
+            set
+            {
+                if (value)
+                {
+                    System.Threading.Interlocked.Exchange(ref _listening, YES);
+                }
+                else
+                {
+                    System.Threading.Interlocked.Exchange(ref _listening, NO);
+                }
+            }
+        }
+        #endregion
+
         public SbizServerAnnouncer()
         {
             s_announce = null;
         }
 
         public void Start(int TCPPort, int UDPPort, string name){
+            Listening = true;
+
             var ipe = new IPEndPoint(IPAddress.Parse("255.255.255.255"), UDPPort);
             s_announce = new Socket(ipe.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
             byte[] data = (SbizAnnounce.NewToByteArray(name, TCPPort));
@@ -40,6 +68,7 @@ namespace SbizServer
 
         public void Stop()
         {
+            Listening = false;
             try
             {
                 s_announce.Close();
@@ -53,7 +82,7 @@ namespace SbizServer
 
         private void BeginSendToCallback(IAsyncResult ar)
         {
-            if(SbizServerController.Listening){
+            if(Listening){
                 BeginSendToState state = (BeginSendToState)ar.AsyncState;
                 state._s.EndSendTo(ar);
                 Thread.Sleep(ANNOUNCE_INTERVAL);
