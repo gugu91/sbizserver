@@ -31,23 +31,16 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SbizServerPropertiesForm));
             this.SbizServerNotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.sbizServerPropertiesUC1 = new SbizServer.SbizServerPropertiesUC();
             this.printPreviewDialog1 = new System.Windows.Forms.PrintPreviewDialog();
+            this.sbizServerPropertiesUC1 = new SbizServer.SbizServerPropertiesUC();
             this.SuspendLayout();
             // 
             // SbizServerNotifyIcon
             // 
             this.SbizServerNotifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("SbizServerNotifyIcon.Icon")));
             this.SbizServerNotifyIcon.Text = "Sbiz Server";
+            this.SbizServerNotifyIcon.Visible = true;
             this.SbizServerNotifyIcon.DoubleClick += new System.EventHandler(this.SbizServerNotifyIcon_DoubleClick);
-            // 
-            // sbizServerPropertiesUC1
-            // 
-            this.sbizServerPropertiesUC1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.sbizServerPropertiesUC1.Location = new System.Drawing.Point(0, 0);
-            this.sbizServerPropertiesUC1.Name = "sbizServerPropertiesUC1";
-            this.sbizServerPropertiesUC1.Size = new System.Drawing.Size(252, 332);
-            this.sbizServerPropertiesUC1.TabIndex = 0;
             // 
             // printPreviewDialog1
             // 
@@ -58,6 +51,14 @@
             this.printPreviewDialog1.Icon = ((System.Drawing.Icon)(resources.GetObject("printPreviewDialog1.Icon")));
             this.printPreviewDialog1.Name = "printPreviewDialog1";
             this.printPreviewDialog1.Visible = false;
+            // 
+            // sbizServerPropertiesUC1
+            // 
+            this.sbizServerPropertiesUC1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sbizServerPropertiesUC1.Location = new System.Drawing.Point(0, 0);
+            this.sbizServerPropertiesUC1.Name = "sbizServerPropertiesUC1";
+            this.sbizServerPropertiesUC1.Size = new System.Drawing.Size(252, 332);
+            this.sbizServerPropertiesUC1.TabIndex = 0;
             // 
             // SbizServerPropertiesForm
             // 

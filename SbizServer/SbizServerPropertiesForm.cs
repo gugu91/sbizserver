@@ -56,14 +56,19 @@ namespace SbizServer
                 if (args.Status == SbizModelChanged_EventArgs.CONNECTED)
                 {
                     SbizServerNotifyIcon.ShowBalloonTip(500, "SbizServer", "Client connected", ToolTipIcon.Info);
-                    SbizServerNotifyIcon.Visible = true;
-                    SbizServerNotifyIcon.Icon = SbizServerIconGreen;
-                    this.Icon = SbizServerIconGreen;
+                    this.Icon = SbizServerNotifyIcon.Icon = SbizServerIconYellow;
                     Hide();
+                }
+                else if (args.Status == SbizModelChanged_EventArgs.TARGET)
+                {
+                    this.Icon = SbizServerNotifyIcon.Icon = SbizServerIconGreen;
+                }
+                else if (args.Status == SbizModelChanged_EventArgs.NOT_TARGET)
+                {
+                    this.Icon = SbizServerNotifyIcon.Icon = SbizServerIconYellow;
                 }
                 else
                 {
-                    SbizServerNotifyIcon.Visible = false;
                     SbizServerNotifyIcon.Icon = SbizServerIconRed;
                     this.Icon = SbizServerIconRed;
                     Show();
