@@ -31,6 +31,7 @@ namespace SbizServer
         {
             KeyboardCleanup();
             _listener = new SbizMessager();
+            _listener.RegisterMessageHandle(MessageHandle);
             _announcer = new SbizServerAnnouncer();
             _listener.Listen(TCPPort);
             _listener.StartServer(SbizServerController.OnModelChanged, view_handle);
@@ -39,6 +40,7 @@ namespace SbizServer
 
         public static void Stop()
         {
+            _listener.UnregisterMessageHandle(MessageHandle);
             _listener.StopServer(SbizServerController.OnModelChanged);
             _announcer.Stop();
             KeyboardCleanup();
@@ -54,6 +56,14 @@ namespace SbizServer
             {
                 SbizMouseEventArgs smea = new SbizMouseEventArgs(m.Data);
                 SimulateMouseEvent(m.Code, smea);
+            }
+            if (m.Code == SbizMessageConst.TARGET)
+            {
+                SbizServerController.OnModelChanged(_listener, new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.TARGET));
+            }
+            else if (m.Code == SbizMessageConst.NOT_TARGET)
+            {
+                SbizServerController.OnModelChanged(_listener, new SbizModelChanged_EventArgs(SbizModelChanged_EventArgs.NOT_TARGET));
             }
 
             //Add other events...
