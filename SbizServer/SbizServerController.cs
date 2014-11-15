@@ -43,11 +43,11 @@ namespace SbizServer
             NativeImport.RemoveClipboardFormatListener(_clipboard_listener_control_handle);
             SbizServerModel.Stop();
         }
+
         public static void RegisterView(SbizForm view) //Call this from a view to subscribe the event
         {
             ModelChanged += new SbizModelChanged_Delegate(view.UpdateViewOnModelChanged);
         }
-
         public static void UnregisterView(SbizForm view) //Call this from a view to unsubscribe events
         {
             ModelChanged -= new SbizModelChanged_Delegate(view.UpdateViewOnModelChanged);
