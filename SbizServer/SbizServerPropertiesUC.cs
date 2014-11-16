@@ -19,6 +19,7 @@ namespace SbizServer
             SbizServerSetUDPPortNumericUpDown.Value = Properties.Settings.Default.UDPPort;
             SbizServerSetTCPPortNumericUpDown.Value = Properties.Settings.Default.TCPPort;
             SbizServerServerNameTextbox.Text = Properties.Settings.Default.ServerName;
+            SbizServerPasswordBox.Text = Properties.Settings.Default.Password;
             SbizServerController.RegisterView(this);
         }
 
@@ -47,8 +48,7 @@ namespace SbizServer
                     SbizServerSetUDPPortNumericUpDown.Enabled = false;
                     SbizServerServerNameTextbox.Enabled = false;
                 }
-                else if (args.Status == SbizModelChanged_EventArgs.ERROR ||
-                    args.Status == SbizModelChanged_EventArgs.NOT_CONNECTED)
+                else if (args.Status <= 0) //ERRORS or NOT_CONNECTED
                 {
                     SbizServerConnectionStatusLabel.Text = "Not Connected";
                     SbizServerConnectionStatusLabel.ForeColor = Color.Red;
@@ -64,12 +64,14 @@ namespace SbizServer
         {
             if (Properties.Settings.Default.TCPPort != Convert.ToInt32(SbizServerSetTCPPortNumericUpDown.Value) ||
                 Properties.Settings.Default.UDPPort != Convert.ToInt32(SbizServerSetUDPPortNumericUpDown.Value) ||
-                Properties.Settings.Default.ServerName != SbizServerServerNameTextbox.Text)
+                Properties.Settings.Default.ServerName != SbizServerServerNameTextbox.Text||
+                Properties.Settings.Default.Password != SbizServerPasswordBox.Text)
             {
                 SbizServerController.Stop(this.Handle);
                 Properties.Settings.Default.TCPPort = Convert.ToInt32(SbizServerSetTCPPortNumericUpDown.Value);
                 Properties.Settings.Default.UDPPort = Convert.ToInt32(SbizServerSetUDPPortNumericUpDown.Value);
                 Properties.Settings.Default.ServerName = SbizServerServerNameTextbox.Text;
+                Properties.Settings.Default.Password = SbizServerPasswordBox.Text;
                 Properties.Settings.Default.Save();
                 SbizServerController.Start(this.Handle);
             }

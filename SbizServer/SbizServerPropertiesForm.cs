@@ -70,8 +70,7 @@ namespace SbizServer
                     this.Icon = SbizServerIconYellow;
                     SbizServerNotifyIcon.Icon = SbizServerIconYellow;
                 }
-                else if (args.Status == SbizModelChanged_EventArgs.ERROR ||
-                    args.Status == SbizModelChanged_EventArgs.NOT_CONNECTED)
+                else if (args.Status <= 0) //ERRORS or NOT_CONNECTED
                 {
                     SbizServerNotifyIcon.Icon = SbizServerIconRed;
                     this.Icon = SbizServerIconRed;

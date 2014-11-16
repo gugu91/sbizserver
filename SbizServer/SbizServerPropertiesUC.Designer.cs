@@ -39,6 +39,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.SbizServerStopConnectionButton = new System.Windows.Forms.Button();
             this.SbizServerConnectionStatusLabel = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.SbizServerPasswordBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.SbizServerSetUDPPortNumericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SbizServerSetTCPPortNumericUpDown)).BeginInit();
             this.SuspendLayout();
@@ -46,7 +48,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(26, 104);
+            this.label4.Location = new System.Drawing.Point(26, 78);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(70, 13);
             this.label4.TabIndex = 24;
@@ -54,7 +56,7 @@
             // 
             // SbizServerServerNameTextbox
             // 
-            this.SbizServerServerNameTextbox.Location = new System.Drawing.Point(29, 120);
+            this.SbizServerServerNameTextbox.Location = new System.Drawing.Point(29, 94);
             this.SbizServerServerNameTextbox.MaxLength = 15;
             this.SbizServerServerNameTextbox.Name = "SbizServerServerNameTextbox";
             this.SbizServerServerNameTextbox.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -63,7 +65,7 @@
             // 
             // SbizServerSetUDPPortNumericUpDown
             // 
-            this.SbizServerSetUDPPortNumericUpDown.Location = new System.Drawing.Point(121, 66);
+            this.SbizServerSetUDPPortNumericUpDown.Location = new System.Drawing.Point(121, 50);
             this.SbizServerSetUDPPortNumericUpDown.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -87,7 +89,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(26, 68);
+            this.label3.Location = new System.Drawing.Point(26, 52);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(89, 13);
             this.label3.TabIndex = 21;
@@ -96,7 +98,7 @@
             // SbizServerApplySettingsButton
             // 
             this.SbizServerApplySettingsButton.AutoSize = true;
-            this.SbizServerApplySettingsButton.Location = new System.Drawing.Point(121, 146);
+            this.SbizServerApplySettingsButton.Location = new System.Drawing.Point(121, 161);
             this.SbizServerApplySettingsButton.Name = "SbizServerApplySettingsButton";
             this.SbizServerApplySettingsButton.Size = new System.Drawing.Size(100, 26);
             this.SbizServerApplySettingsButton.TabIndex = 20;
@@ -115,7 +117,7 @@
             // 
             // SbizServerSetTCPPortNumericUpDown
             // 
-            this.SbizServerSetTCPPortNumericUpDown.Location = new System.Drawing.Point(121, 30);
+            this.SbizServerSetTCPPortNumericUpDown.Location = new System.Drawing.Point(121, 14);
             this.SbizServerSetTCPPortNumericUpDown.Maximum = new decimal(new int[] {
             65535,
             0,
@@ -148,7 +150,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(26, 32);
+            this.label1.Location = new System.Drawing.Point(26, 16);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(79, 13);
             this.label1.TabIndex = 16;
@@ -175,10 +177,31 @@
             this.SbizServerConnectionStatusLabel.Text = "Not Connected";
             this.SbizServerConnectionStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(26, 119);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(56, 13);
+            this.label5.TabIndex = 26;
+            this.label5.Text = "Password:";
+            // 
+            // SbizServerPasswordBox
+            // 
+            this.SbizServerPasswordBox.Location = new System.Drawing.Point(29, 135);
+            this.SbizServerPasswordBox.MaxLength = 15;
+            this.SbizServerPasswordBox.Name = "SbizServerPasswordBox";
+            this.SbizServerPasswordBox.PasswordChar = '*';
+            this.SbizServerPasswordBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.SbizServerPasswordBox.Size = new System.Drawing.Size(192, 20);
+            this.SbizServerPasswordBox.TabIndex = 25;
+            // 
             // SbizServerPropertiesUC
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.SbizServerPasswordBox);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.SbizServerServerNameTextbox);
             this.Controls.Add(this.SbizServerSetUDPPortNumericUpDown);
@@ -213,5 +236,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button SbizServerStopConnectionButton;
         private System.Windows.Forms.Label SbizServerConnectionStatusLabel;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox SbizServerPasswordBox;
     }
 }

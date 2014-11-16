@@ -34,7 +34,7 @@ namespace SbizServer
             _listener.RegisterMessageHandle(MessageHandle);
             _announcer = new SbizServerAnnouncer();
             _listener.Listen(TCPPort);
-            _listener.StartServer(SbizServerController.OnModelChanged, view_handle, "password");
+            _listener.StartServer(SbizServerController.OnModelChanged, view_handle, Properties.Settings.Default.Password);
             _announcer.Start(TCPPort, UDPPort, servername);
         }
         public static void Stop()
