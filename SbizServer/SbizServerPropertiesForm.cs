@@ -57,6 +57,7 @@ namespace SbizServer
                 {
                     SbizServerNotifyIcon.ShowBalloonTip(500, "SbizServer", "Client connected", ToolTipIcon.Info);
                     this.Icon = SbizServerIconGreen;
+                    SbizServerNotifyIcon.Visible = true;
                     SbizServerNotifyIcon.Icon = SbizServerIconGreen;
                     Hide();
                 }
@@ -74,6 +75,7 @@ namespace SbizServer
                 {
                     SbizServerNotifyIcon.Icon = SbizServerIconRed;
                     this.Icon = SbizServerIconRed;
+                    SbizServerNotifyIcon.Visible = false;
                     Show();
                 }
             }
